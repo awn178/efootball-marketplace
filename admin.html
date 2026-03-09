@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Admin Dashboard - eFootball Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .container {
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Admin Header */
+        .admin-header {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #4CAF50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .role-badge {
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .role-badge.owner {
+            background: #FFD700;
+            color: #000;
+        }
+        .role-badge.admin {
+            background: #2196F3;
+            color: white;
+        }
+        .logout-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #16213e;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #2a3a5a;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFD700;
+        }
+        .stat-label {
+            color: #8892b0;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: #16213e;
+            padding: 8px;
+            border-radius: 30px;
+            overflow-x: auto;
+        }
+        .tab {
+            padding: 10px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            background: #1e2a3a;
+            color: #8892b0;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        
+        /* Cards */
+        .card {
+            background: #16213e;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #2a3a5a;
+        }
+        .card h2 {
+            color: #4CAF50;
+            margin-bottom: 16px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: #1e2a3a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        th {
+            background: #4CAF50;
+            color: white;
+            padding: 12px;
+            font-size: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #2a3a5a;
+            font-size: 13px;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .btn-green {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-blue {
+            background: #2196F3;
+            color: white;
+        }
+        .btn-red {
+            background: #f44336;
+            color: white;
+        }
+        .btn-yellow {
+            background: #FFC107;
+            color: black;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #16213e;
+            padding: 25px 20px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #4CAF50;
+        }
+        .modal-content h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #1e2a3a;
+            border: 1px solid #2a3a5a;
+            color: white;
+            border-radius: 8px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .skill-item {
+            background: #1e2a3a;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Admins Grid */
+        .admins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .admin-card {
+            background: #1e2a3a;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .admin-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .admin-info {
+            flex: 1;
+        }
+        .admin-name {
+            font-weight: 600;
+            color: #4CAF50;
+        }
+        .admin-telegram {
+            font-size: 12px;
+            color: #8892b0;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #8892b0;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        👑 ADMIN DASHBOARD - eFOOTBALL MARKETPLACE
+    </header>
+
+    <div class="container">
+        <!-- Admin Header -->
+        <div class="admin-header" id="adminHeader" style="display: none;">
+            <div>
+                <h1 style="color: #4CAF50;">Welcome, <span id="adminName"></span></h1>
+                <p style="color: #8892b0;">Role: <span id="adminRole"></span></p>
+            </div>
+            <div>
+                <span id="roleBadge" class="role-badge"></span>
+                <button class="logout-btn" onclick="logout()">LOGOUT</button>
+            </div>
+        </div>
+
+        <!-- Login Prompt (if not logged in) -->
+        <div id="loginPrompt" class="card" style="text-align: center; padding: 40px;">
+            <h2 style="color: #4CAF50;">🔐 ADMIN LOGIN REQUIRED</h2>
+            <p style="margin: 20px 0;">Please <a href="/login" style="color: #4CAF50;">click here</a> to login.</p>
+        </div>
+
+        <!-- Dashboard Content (shown after login) -->
+        <div id="dashboardContent" style="display: none;">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalListings">0</div>
+                    <div class="stat-label">Total Listings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeListings">0</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="soldListings">0</div>
+                    <div class="stat-label">Sold</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSkills">0</div>
+                    <div class="stat-label">Skills</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('listings')">📋 LISTINGS</div>
+                <div class="tab" onclick="switchTab('skills')">✨ SKILLS</div>
+                <div class="tab" onclick="switchTab('admins')">👥 ADMINS</div>
+                <div class="tab" onclick="switchTab('post')">📝 MANUAL POST</div>
+            </div>
+
+            <!-- LISTINGS TAB -->
+            <div id="listings-section" class="section active">
+                <div class="card">
+                    <h2>📋 ALL LISTINGS</h2>
+                    <div class="table-container">
+                        <table id="listingsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Seller</th>
+                                    <th>Price</th>
+                                    <th>Coins</th>
+                                    <th>Trade Type</th>
+                                    <th>Link Type</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listingsBody">
+                                <tr><td colspan="9" class="loading">Loading listings...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKILLS TAB -->
+            <div id="skills-section" class="section">
+                <div class="card">
+                    <h2>✨ MANAGE SPECIAL SKILLS</h2>
+                    <button class="btn btn-green" onclick="showAddSkillModal()" style="margin-bottom: 20px;">➕ ADD NEW SKILL</button>
+                    
+                    <div id="skillsList" class="skills-grid">
+                        <div class="loading">Loading skills...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMINS TAB -->
+            <div id="admins-section" class="section">
+                <div class="card">
+                    <h2>👥 TRUSTED ADMINS</h2>
+                    <button class="btn btn-green" onclick="showAddAdminModal()" style="margin-bottom: 20px;">➕ ADD ADMIN</button>
+                    
+                    <div id="adminsList" class="admins-grid">
+                        <div class="loading">Loading admins...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MANUAL POST TAB -->
+            <div id="post-section" class="section">
+                <div class="card">
+                    <h2>📝 MANUALLY POST LISTING</h2>
+                    <p style="color: #8892b0; margin-bottom: 20px;">Create a listing for a user who cannot post themselves.</p>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #4CAF50; display: block; margin-bottom: 5px;">Seller Username</label>
+                        <input type="text" id="manualSeller" class="modal-input" placeholder="@username">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #4CAF50; display: block; margin-bottom: 5px;">Main Squad Screenshot</label>
+                        <input type="file" id="manualMainSquad" accept="image/*" style="color: white;">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #4CAF50; display: block; margin-bottom: 5px;">Overbench Screenshot</label>
+                        <input type="file" id="manualOverbench" accept="image/*" style="color: white;">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #4CAF50; display: block; margin-bottom: 5px;">Price (ETB)</label>
+                        <input type="number" id="manualPrice" class="modal-input" placeholder="1500">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #4CAF50; display: block; margin-bottom: 5px;">Coin Amount</label>
+                        <input type="number" id="manualCoins" class="modal-input" placeholder="0" value="0">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #4CAF50; display: block; margin-bottom: 5px;">Trade Type</label>
+                        <select id="manualTradeType" class="modal-input">
+                            <option value="FOR SALE">FOR SALE</option>
+                            <option value="FOR EXCHANGE">FOR EXCHANGE</option>
+                            <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #4CAF50; display: block; margin-bottom: 5px;">Link Type</label>
+                        <select id="manualLinkType" class="modal-input">
+                            <option value="KONAMI LINK">KONAMI LINK</option>
+                            <option value="GOOGLE LINK">GOOGLE LINK</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-green" onclick="manualPost()" style="width: 100%; padding: 15px;">✅ POST LISTING</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Listing Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>✏️ EDIT LISTING</h3>
+            <input type="hidden" id="editId">
+            
+            <label>Price (ETB)</label>
+            <input type="number" id="editPrice" class="modal-input">
+            
+            <label>Coin Amount</label>
+            <input type="number" id="editCoins" class="modal-input">
+            
+            <label>Trade Type</label>
+            <select id="editTradeType" class="modal-input">
+                <option value="FOR SALE">FOR SALE</option>
+                <option value="FOR EXCHANGE">FOR EXCHANGE</option>
+                <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
+            </select>
+            
+            <label>Link Type</label>
+            <select id="editLinkType" class="modal-input">
+                <option value="KONAMI LINK">KONAMI LINK</option>
+                <option value="GOOGLE LINK">GOOGLE LINK</option>
+            </select>
+            
+            <label>Status</label>
+            <select id="editStatus" class="modal-input">
+                <option value="active">Active</option>
+                <option value="sold">Sold</option>
+                <option value="inactive">Inactive</option>
+            </select>
+            
+            <div class="modal-buttons">
+                <button class="btn btn-green" onclick="saveEdit()">SAVE</button>
+                <button class="btn btn-red" onclick="closeModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Skill Modal -->
+    <div class="modal" id="addSkillModal">
+        <div class="modal-content">
+            <h3>➕ ADD NEW SKILL</h3>
+            <input type="text" id="newSkillName" class="modal-input" placeholder="Skill name">
+            <div class="modal-buttons">
+                <button class="btn btn-green" onclick="addSkill()">ADD</button>
+                <button class="btn btn-red" onclick="closeSkillModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Skill Modal -->
+    <div class="modal" id="editSkillModal">
+        <div class="modal-content">
+            <h3>✏️ EDIT SKILL</h3>
+            <input type="hidden" id="editSkillOld">
+            <input type="text" id="editSkillNew" class="modal-input" placeholder="New skill name">
+            <div class="modal-buttons">
+                <button class="btn btn-green" onclick="updateSkill()">UPDATE</button>
+                <button class="btn btn-red" onclick="closeEditSkillModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div class="modal" id="addAdminModal">
+        <div class="modal-content">
+            <h3>➕ ADD TRUSTED ADMIN</h3>
+            <input type="text" id="adminName" class="modal-input" placeholder="Full name">
+            <input type="text" id="adminTelegram" class="modal-input" placeholder="Telegram username (with @)">
+            <input type="text" id="adminPayment" class="modal-input" placeholder="Payment method">
+            <div class="modal-buttons">
+                <button class="btn btn-green" onclick="addAdmin()">ADD</button>
+                <button class="btn btn-red" onclick="closeAdminModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let adminRole = '';
+        let adminUser = '';
+
+        // Check login status
+        function checkAuth() {
+            adminUser = localStorage.getItem('adminUser');
+            adminRole = localStorage.getItem('adminRole');
+            
+            if (adminUser && adminRole) {
+                document.getElementById('loginPrompt').style.display = 'none';
+                document.getElementById('adminHeader').style.display = 'flex';
+                document.getElementById('dashboardContent').style.display = 'block';
+                
+                document.getElementById('adminName').textContent = adminUser;
+                document.getElementById('adminRole').textContent = adminRole;
+                
+                const badge = document.getElementById('roleBadge');
+                badge.textContent = adminRole === 'owner' ? 'OWNER' : 'ADMIN';
+                badge.className = adminRole === 'owner' ? 'role-badge owner' : 'role-badge admin';
+                
+                loadAllData();
+            } else {
+                document.getElementById('loginPrompt').style.display = 'block';
+                document.getElementById('adminHeader').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'none';
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('adminUser');
+            localStorage.removeItem('adminRole');
+            window.location.href = '/login';
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-section').classList.add('active');
+        }
+
+        // Load all data
+        async function loadAllData() {
+            loadListings();
+            loadSkills();
+            loadAdmins();
+        }
+
+        // ==================== LISTINGS ====================
+        async function loadListings() {
+            try {
+                const res = await fetch('/api/admin/listings');
+                const listings = await res.json();
+                
+                let total = listings.length;
+                let active = listings.filter(l => l.is_active && !l.is_sold).length;
+                let sold = listings.filter(l => l.is_sold).length;
+                
+                document.getElementById('totalListings').textContent = total;
+                document.getElementById('activeListings').textContent = active;
+                document.getElementById('soldListings').textContent = sold;
+                
+                let html = '';
+                listings.forEach(l => {
+                    let status = l.is_sold ? 'SOLD' : (l.is_active ? 'ACTIVE' : 'INACTIVE');
+                    let statusColor = l.is_sold ? '#f44336' : (l.is_active ? '#4CAF50' : '#FFC107');
+                    
+                    html += `
+                        <tr>
+                            <td>#${l.id}</td>
+                            <td>${l.seller}</td>
+                            <td>💰 ${l.price} ETB</td>
+                            <td>${l.coin_amount > 0 ? l.coin_amount + ' Coins' : 'No Coins'}</td>
+                            <td>${l.trade_type}</td>
+                            <td>${l.link_type}</td>
+                            <td style="color: ${statusColor};">${status}</td>
+                            <td>${new Date(l.created).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn btn-blue" onclick="editListing(${l.id}, ${l.price}, ${l.coin_amount}, '${l.trade_type}', '${l.link_type}', ${l.is_active}, ${l.is_sold})">✏️</button>
+                                <button class="btn btn-red" onclick="deleteListing(${l.id})">🗑️</button>
+                                <button class="btn btn-yellow" onclick="viewListing(${l.id})">👁️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                document.getElementById('listingsBody').innerHTML = html;
+                
+            } catch (e) {
+                console.error('Error loading listings:', e);
+            }
+        }
+
+        // Edit listing
+        function editListing(id, price, coins, tradeType, linkType, isActive, isSold) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editCoins').value = coins;
+            document.getElementById('editTradeType').value = tradeType;
+            document.getElementById('editLinkType').value = linkType;
+            
+            let status = 'active';
+            if (isSold) status = 'sold';
+            else if (!isActive) status = 'inactive';
+            document.getElementById('editStatus').value = status;
+            
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        async function saveEdit() {
+            const id = document.getElementById('editId').value;
+            const price = document.getElementById('editPrice').value;
+            const coins = document.getElementById('editCoins').value;
+            const tradeType = document.getElementById('editTradeType').value;
+            const linkType = document.getElementById('editLinkType').value;
+            const status = document.getElementById('editStatus').value;
+            
+            const isSold = status === 'sold';
+            const isActive = status === 'active';
+            
+            try {
+                const res = await fetch('/api/admin/edit_listing', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        listing_id: id,
+                        price: parseInt(price),
+                        coin_amount: parseInt(coins),
+                        trade_type: tradeType,
+                        link_type: linkType,
+                        is_active: isActive,
+                        is_sold: isSold
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Listing updated!');
+                    closeModal();
+                    loadListings();
+                }
+            } catch (e) {}
+        }
+
+        async function deleteListing(id) {
+            if (!confirm('Delete this listing?')) return;
+            
+            try {
+                const res = await fetch('/api/admin/delete_listing', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ listing_id: id })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Listing deleted!');
+                    loadListings();
+                }
+            } catch (e) {}
+        }
+
+        function viewListing(id) {
+            window.open(`/detail/${id}`, '_blank');
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('show');
+        }
+
+        // ==================== SKILLS ====================
+        async function loadSkills() {
+            try {
+                const res = await fetch('/api/skills');
+                const skills = await res.json();
+                
+                document.getElementById('totalSkills').textContent = skills.length;
+                
+                let html = '';
+                skills.forEach(skill => {
+                    html += `
+                        <div class="skill-item">
+                            <span>✨ ${skill}</span>
+                            <div>
+                                <button class="btn btn-blue btn-small" onclick="showEditSkillModal('${skill}')">✏️</button>
+                                <button class="btn btn-red btn-small" onclick="deleteSkill('${skill}')">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('skillsList').innerHTML = html;
+                
+            } catch (e) {}
+        }
+
+        function showAddSkillModal() {
+            document.getElementById('addSkillModal').classList.add('show');
+        }
+
+        function closeSkillModal() {
+            document.getElementById('addSkillModal').classList.remove('show');
+            document.getElementById('newSkillName').value = '';
+        }
+
+        async function addSkill() {
+            const skill = document.getElementById('newSkillName').value.trim();
+            if (!skill) return;
+            
+            try {
+                const res = await fetch('/api/admin/skills', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ action: 'add', skill_name: skill })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Skill added!');
+                    closeSkillModal();
+                    loadSkills();
+                }
+            } catch (e) {}
+        }
+
+        function showEditSkillModal(oldSkill) {
+            document.getElementById('editSkillOld').value = oldSkill;
+            document.getElementById('editSkillNew').value = oldSkill;
+            document.getElementById('editSkillModal').classList.add('show');
+        }
+
+        function closeEditSkillModal() {
+            document.getElementById('editSkillModal').classList.remove('show');
+        }
+
+        async function updateSkill() {
+            const oldSkill = document.getElementById('editSkillOld').value;
+            const newSkill = document.getElementById('editSkillNew').value.trim();
+            
+            if (!newSkill) return;
+            
+            try {
+                const res = await fetch('/api/admin/skills', {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ action: 'edit', skill_name: oldSkill, new_name: newSkill })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Skill updated!');
+                    closeEditSkillModal();
+                    loadSkills();
+                }
+            } catch (e) {}
+        }
+
+        async function deleteSkill(skill) {
+            if (!confirm(`Delete skill "${skill}"?`)) return;
+            
+            try {
+                const res = await fetch('/api/admin/skills', {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ action: 'delete', skill_name: skill })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Skill deleted!');
+                    loadSkills();
+                }
+            } catch (e) {}
+        }
+
+        // ==================== ADMINS ====================
+        async function loadAdmins() {
+            // For demo, show placeholder
+            document.getElementById('adminsList').innerHTML = `
+                <div class="admin-card">
+                    <div class="admin-avatar">O</div>
+                    <div class="admin-info">
+                        <div class="admin-name">Owner</div>
+                        <div class="admin-telegram">@awnowner</div>
+                        <div style="font-size: 11px; color: #FFD700;">Bank Transfer</div>
+                    </div>
+                    <button class="btn btn-red btn-small" onclick="alert('Delete admin')">🗑️</button>
+                </div>
+            `;
+        }
+
+        function showAddAdminModal() {
+            document.getElementById('addAdminModal').classList.add('show');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('addAdminModal').classList.remove('show');
+        }
+
+        function addAdmin() {
+            alert('Add admin functionality coming soon');
+            closeAdminModal();
+        }
+
+        // ==================== MANUAL POST ====================
+        function manualPost() {
+            alert('Manual post functionality coming soon');
+        }
+
+        // Check auth on load
+        checkAuth();
+    </script>
+</body>
+  </html>
