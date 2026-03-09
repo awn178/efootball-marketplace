@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Sell Account - eFootball Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .container {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .back-btn {
+            background: #1e2a3a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: #16213e;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #4CAF50;
+            margin-bottom: 20px;
+        }
+        .form-title {
+            color: #4CAF50;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            color: #8892b0;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group label.required::after {
+            content: " *";
+            color: #f44336;
+        }
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            background: #1e2a3a;
+            border: 1px solid #2a3a5a;
+            color: white;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .form-input[readonly] {
+            background: #253545;
+            color: #4CAF50;
+            font-weight: 500;
+        }
+        
+        /* File Upload */
+        .upload-area {
+            background: #1e2a3a;
+            border: 2px dashed #4CAF50;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .upload-area:hover {
+            background: #253545;
+        }
+        .file-name {
+            color: #4CAF50;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        .preview-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #4CAF50;
+        }
+        
+        /* Select Dropdown */
+        .form-select {
+            width: 100%;
+            padding: 14px;
+            background: #1e2a3a;
+            border: 1px solid #2a3a5a;
+            color: white;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: #1e2a3a;
+            padding: 12px;
+            border-radius: 10px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .radio-option input[type="radio"] {
+            accent-color: #4CAF50;
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* Featured Players */
+        .players-container {
+            background: #1e2a3a;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .player-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .player-input-row input {
+            flex: 1;
+            padding: 12px;
+            background: #16213e;
+            border: 1px solid #2a3a5a;
+            color: white;
+            border-radius: 8px;
+        }
+        .remove-player {
+            background: #f44336;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .add-player-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* Special Skills */
+        .skills-container {
+            background: #1e2a3a;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .skill-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: #16213e;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .skill-checkbox input[type="checkbox"] {
+            accent-color: #4CAF50;
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        
+        /* Info Text */
+        .info-text {
+            color: #8892b0;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .warning-text {
+            color: #FFC107;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px 16px;
+            color: #8892b0;
+            border-top: 1px solid #2a3a5a;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        🛒 eFOOTBALL MARKETPLACE - SELL ACCOUNT
+    </header>
+
+    <div class="container">
+        <button class="back-btn" onclick="goBack()">← BACK TO MARKETPLACE</button>
+
+        <div class="form-card">
+            <div class="form-title">📝 LIST YOUR ACCOUNT FOR SALE</div>
+
+            <!-- Seller Username (Auto-filled) -->
+            <div class="input-group">
+                <label class="required">SELLER USERNAME</label>
+                <input type="text" id="sellerUsername" class="form-input" readonly>
+                <div class="info-text">Your Telegram username (auto-filled)</div>
+            </div>
+
+            <!-- Main Squad Screenshot -->
+            <div class="input-group">
+                <label class="required">MAIN SQUAD SCREENSHOT</label>
+                <div class="upload-area" onclick="document.getElementById('mainSquadInput').click()">
+                    📸 Click to upload main squad screenshot
+                </div>
+                <input type="file" id="mainSquadInput" accept="image/*" style="display: none;" onchange="previewMainSquad(this)">
+                <div id="mainSquadFileName" class="file-name"></div>
+                <img id="mainSquadPreview" class="preview-image" style="display: none;">
+            </div>
+
+            <!-- Overbench Squad Screenshot -->
+            <div class="input-group">
+                <label class="required">OVERBENCH SQUAD SCREENSHOT</label>
+                <div class="upload-area" onclick="document.getElementById('overbenchInput').click()">
+                    📸 Click to upload overbench screenshot
+                </div>
+                <input type="file" id="overbenchInput" accept="image/*" style="display: none;" onchange="previewOverbench(this)">
+                <div id="overbenchFileName" class="file-name"></div>
+                <img id="overbenchPreview" class="preview-image" style="display: none;">
+            </div>
+
+            <!-- Price -->
+            <div class="input-group">
+                <label class="required">PRICE (ETB)</label>
+                <input type="number" id="price" class="form-input" placeholder="e.g., 1500" min="0">
+            </div>
+
+            <!-- Coin Amount -->
+            <div class="input-group">
+                <label>COINS (Optional)</label>
+                <input type="number" id="coinAmount" class="form-input" placeholder="Enter coin amount or leave 0 for no coins" min="0" value="0">
+                <div class="info-text">Enter 0 if account has no coins</div>
+            </div>
+
+            <!-- Trade Type -->
+            <div class="input-group">
+                <label class="required">TRADE TYPE</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="tradeType" value="FOR SALE" checked> 💰 FOR SALE
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="tradeType" value="FOR EXCHANGE"> 🔄 FOR EXCHANGE
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="tradeType" value="SALE & EXCHANGE"> 🔄💰 SALE / EXCHANGE
+                    </label>
+                </div>
+            </div>
+
+            <!-- Link Type -->
+            <div class="input-group">
+                <label class="required">LINK TYPE</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="linkType" value="KONAMI LINK" checked> 🔗 KONAMI LINK
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="linkType" value="GOOGLE LINK"> 🔗 GOOGLE LINK
+                    </label>
+                </div>
+            </div>
+
+            <!-- Featured Players (Max 4) -->
+            <div class="input-group">
+                <label class="required">FEATURED PLAYERS (Max 4)</label>
+                <div class="players-container">
+                    <div id="playersContainer">
+                        <div class="player-input-row">
+                            <input type="text" class="player-input" placeholder="Player name (e.g., Messi)" maxlength="50">
+                            <button class="remove-player" onclick="removePlayer(this)" style="display: none;">✖</button>
+                        </div>
+                    </div>
+                    <button class="add-player-btn" onclick="addPlayer()" id="addPlayerBtn">➕ ADD PLAYER</button>
+                </div>
+                <div class="warning-text" id="playerLimitWarning" style="display: none;">Maximum 4 players allowed</div>
+            </div>
+
+            <!-- Special Skills (Multi-select) -->
+            <div class="input-group">
+                <label>SPECIAL SKILLS</label>
+                <div class="skills-container" id="skillsContainer">
+                    <div class="loading">Loading skills...</div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="submit-btn" onclick="submitListing()" id="submitBtn">✅ POST LISTING</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 eFootball Marketplace | Buy & Sell Accounts
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const username = localStorage.getItem('username');
+        if (!username) {
+            window.location.href = '/';
+        }
+
+        // Set seller username
+        document.getElementById('sellerUsername').value = username;
+
+        // Global variables
+        let mainSquadBase64 = null;
+        let overbenchBase64 = null;
+        let playerCount = 1;
+        let allSkills = [];
+
+        // Go back
+        function goBack() {
+            window.location.href = '/';
+        }
+
+        // Preview main squad
+        function previewMainSquad(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                document.getElementById('mainSquadFileName').textContent = '📎 ' + file.name;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    mainSquadBase64 = e.target.result;
+                    const preview = document.getElementById('mainSquadPreview');
+                    preview.src = mainSquadBase64;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Preview overbench
+        function previewOverbench(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                document.getElementById('overbenchFileName').textContent = '📎 ' + file.name;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    overbenchBase64 = e.target.result;
+                    const preview = document.getElementById('overbenchPreview');
+                    preview.src = overbenchBase64;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Add player input
+        function addPlayer() {
+            if (playerCount >= 4) {
+                document.getElementById('playerLimitWarning').style.display = 'block';
+                return;
+            }
+            
+            const container = document.getElementById('playersContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'player-input-row';
+            newRow.innerHTML = `
+                <input type="text" class="player-input" placeholder="Player name (e.g., Ronaldo)" maxlength="50">
+                <button class="remove-player" onclick="removePlayer(this)">✖</button>
+            `;
+            container.appendChild(newRow);
+            playerCount++;
+            
+            if (playerCount >= 4) {
+                document.getElementById('addPlayerBtn').style.display = 'none';
+                document.getElementById('playerLimitWarning').style.display = 'block';
+            }
+        }
+
+        // Remove player input
+        function removePlayer(btn) {
+            btn.parentElement.remove();
+            playerCount--;
+            document.getElementById('addPlayerBtn').style.display = 'block';
+            document.getElementById('playerLimitWarning').style.display = 'none';
+        }
+
+        // Load skills from server
+        async function loadSkills() {
+            try {
+                const res = await fetch('/api/skills');
+                const skills = await res.json();
+                allSkills = skills;
+                
+                const container = document.getElementById('skillsContainer');
+                if (skills.length === 0) {
+                    container.innerHTML = '<p style="color: #8892b0;">No skills available</p>';
+                    return;
+                }
+                
+                let html = '<div class="skills-grid">';
+                skills.forEach(skill => {
+                    html += `
+                        <label class="skill-checkbox">
+                            <input type="checkbox" value="${skill}">
+                            <span>✨ ${skill}</span>
+                        </label>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (e) {
+                console.error('Error loading skills:', e);
+                document.getElementById('skillsContainer').innerHTML = '<p style="color: #f44336;">Error loading skills</p>';
+            }
+        }
+
+        // Submit listing
+        async function submitListing() {
+            // Validate required fields
+            if (!mainSquadBase64) {
+                alert('Please upload main squad screenshot');
+                return;
+            }
+            if (!overbenchBase64) {
+                alert('Please upload overbench screenshot');
+                return;
+            }
+            
+            const price = document.getElementById('price').value;
+            if (!price || price <= 0) {
+                alert('Please enter a valid price');
+                return;
+            }
+
+            // Get featured players (max 4)
+            const playerInputs = document.querySelectorAll('.player-input');
+            const featuredPlayers = [];
+            playerInputs.forEach(input => {
+                if (input.value.trim()) {
+                    featuredPlayers.push(input.value.trim());
+                }
+            });
+            
+            if (featuredPlayers.length === 0) {
+                alert('Please enter at least one featured player');
+                return;
+            }
+
+            // Get selected skills
+            const selectedSkills = [];
+            document.querySelectorAll('.skill-checkbox input:checked').forEach(cb => {
+                selectedSkills.push(cb.value);
+            });
+
+            // Get form values
+            const coinAmount = document.getElementById('coinAmount').value || 0;
+            const tradeType = document.querySelector('input[name="tradeType"]:checked').value;
+            const linkType = document.querySelector('input[name="linkType"]:checked').value;
+
+            // Prepare data
+            const listingData = {
+                seller_username: username,
+                main_screenshot: mainSquadBase64,
+                overbench_screenshot: overbenchBase64,
+                price: parseInt(price),
+                featured_players: featuredPlayers,
+                special_skills: selectedSkills,
+                coin_amount: parseInt(coinAmount),
+                trade_type: tradeType,
+                link_type: linkType
+            };
+
+            // Disable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'POSTING...';
+
+            try {
+                const res = await fetch('/api/create_listing', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(listingData)
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Listing posted successfully!');
+                    window.location.href = '/';
+                } else {
+                    alert('Error: ' + data.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '✅ POST LISTING';
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ POST LISTING';
+            }
+        }
+
+        // Load skills on page load
+        loadSkills();
+    </script>
+</body>
+</html>
