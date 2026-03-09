@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>eFootball Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .container {
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Login/Register Section */
+        .login-section {
+            background: #16213e;
+            padding: 20px 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #4CAF50;
+        }
+        .login-section h2 {
+            color: #4CAF50;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        .input-group {
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            display: block;
+            color: #8892b0;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .login-input {
+            width: 100%;
+            padding: 14px;
+            background: #1e2a3a;
+            border: 1px solid #2a3a5a;
+            color: white;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .login-input[readonly] {
+            background: #253545;
+            color: #4CAF50;
+            font-weight: 500;
+        }
+        .login-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .login-btn.secondary {
+            background: #2196F3;
+            margin-top: 8px;
+        }
+        
+        /* User Info */
+        .user-info {
+            background: #1e2a3a;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .username-badge {
+            color: #4CAF50;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .logout-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            background: #16213e;
+            padding: 8px;
+            border-radius: 30px;
+        }
+        .tab {
+            padding: 10px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            background: #1e2a3a;
+            color: #8892b0;
+            font-weight: 600;
+            font-size: 13px;
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        
+        /* Sell Button */
+        .sell-btn {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px;
+            background: #1e2a3a;
+            border: 1px solid #2a3a5a;
+            color: white;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+        
+        /* Listing Grid */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .listing-card {
+            background: #16213e;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #2a3a5a;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .listing-card:hover {
+            transform: translateY(-4px);
+            border-color: #4CAF50;
+        }
+        
+        /* Squad Screenshot */
+        .squad-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #2a3a5a;
+        }
+        
+        /* Tags Container */
+        .tags-container {
+            padding: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .tag-price {
+            background: #4CAF50;
+            color: white;
+        }
+        .tag-sale {
+            background: #f44336;
+            color: white;
+        }
+        .tag-exchange {
+            background: #2196F3;
+            color: white;
+        }
+        .tag-both {
+            background: #9C27B0;
+            color: white;
+        }
+        .tag-coin {
+            background: #FFD700;
+            color: #000;
+        }
+        .tag-link {
+            background: #FF9800;
+            color: white;
+        }
+        
+        /* Loading & Empty States */
+        .loading {
+            text-align: center;
+            color: #8892b0;
+            padding: 40px;
+            font-size: 14px;
+        }
+        .no-listings {
+            text-align: center;
+            color: #8892b0;
+            padding: 40px;
+            font-size: 14px;
+            background: #16213e;
+            border-radius: 16px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px 16px;
+            color: #8892b0;
+            border-top: 1px solid #2a3a5a;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        🛒 eFOOTBALL MARKETPLACE
+    </header>
+
+    <div class="container">
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
+            <h2>🔐 LOGIN / REGISTER</h2>
+            <div class="input-group">
+                <label>Telegram Username</label>
+                <input type="text" id="telegramUsername" class="login-input" placeholder="@username" readonly>
+            </div>
+            <div class="input-group">
+                <label>PIN (4-6 digits)</label>
+                <input type="password" id="pin" class="login-input" placeholder="••••" maxlength="6">
+            </div>
+            <button class="login-btn" onclick="login()">LOGIN</button>
+            <button class="login-btn secondary" onclick="register()">REGISTER</button>
+            <p style="color: #8892b0; font-size: 12px; margin-top: 12px; text-align: center;">
+                Your Telegram username is auto-filled from the bot
+            </p>
+        </div>
+
+        <!-- User Info (after login) -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            <div>
+                <span class="username-badge" id="displayUsername"></span>
+                <span id="sellerBadge" style="background: #4CAF50; color: white; padding: 3px 8px; border-radius: 12px; margin-left: 8px; font-size: 10px; display: none;">SELLER</span>
+            </div>
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+        </div>
+
+        <!-- Tabs (after login) -->
+        <div class="tabs" id="tabs" style="display: none;">
+            <div class="tab active" onclick="switchTab('feed')">🛒 MARKETPLACE</div>
+            <div class="tab" onclick="switchTab('mylistings')">📋 MY LISTINGS</div>
+        </div>
+
+        <!-- SELL BUTTON -->
+        <button class="sell-btn" onclick="goToSell()" id="sellBtn" style="display: none;">
+            ➕ SELL ACCOUNT
+        </button>
+
+        <!-- SEARCH BAR -->
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search by player name..." id="searchInput" onkeyup="searchListings()">
+        </div>
+
+        <!-- MAIN FEED SECTION -->
+        <div id="feed-section" class="section active">
+            <div id="listingsGrid" class="listings-grid">
+                <div class="loading">Loading listings...</div>
+            </div>
+        </div>
+
+        <!-- MY LISTINGS SECTION -->
+        <div id="mylistings-section" class="section">
+            <div id="myListingsGrid" class="listings-grid">
+                <div class="loading">Loading your listings...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 eFootball Marketplace | Buy & Sell Accounts
+    </div>
+
+    <script>
+        // Telegram Web App
+        let tg = window.Telegram?.WebApp;
+        let userId = null;
+        let username = null;
+        let isSeller = false;
+
+        // Initialize Telegram
+        function initTelegram() {
+            if (tg) {
+                tg.ready();
+                tg.expand();
+                
+                const user = tg.initDataUnsafe?.user;
+                if (user) {
+                    const usernameField = document.getElementById('telegramUsername');
+                    if (usernameField) {
+                        if (user.username) {
+                            usernameField.value = '@' + user.username;
+                        } else if (user.first_name) {
+                            usernameField.value = '@' + user.first_name.toLowerCase().replace(/\s+/g, '');
+                        }
+                        usernameField.readOnly = true;
+                        usernameField.style.background = '#253545';
+                    }
+                    
+                    window.telegramUser = {
+                        id: user.id,
+                        username: user.username ? '@' + user.username : null,
+                        first_name: user.first_name
+                    };
+                }
+            }
+        }
+
+        // Initialize
+        function init() {
+            initTelegram();
+            
+            const savedUser = localStorage.getItem('username');
+            const savedId = localStorage.getItem('userId');
+            
+            if (savedUser && savedId) {
+                username = savedUser;
+                userId = savedId;
+                showLoggedIn();
+                loadListings();
+            }
+        }
+
+        // Register
+        async function register() {
+            let telegramUsername = document.getElementById('telegramUsername').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+            
+            if (!telegramUsername) {
+                alert('Please enter Telegram username');
+                return;
+            }
+            
+            if (!pin || pin.length < 4 || pin.length > 6) {
+                alert('PIN must be 4-6 digits');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        telegram_username: telegramUsername,
+                        pin: pin
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    userId = data.user_id;
+                    username = data.username;
+                    
+                    localStorage.setItem('userId', userId);
+                    localStorage.setItem('username', username);
+                    
+                    showLoggedIn();
+                    loadListings();
+                } else {
+                    alert('Registration failed: ' + data.message);
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        // Login
+        async function login() {
+            let telegramUsername = document.getElementById('telegramUsername').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+            
+            if (!telegramUsername || !pin) {
+                alert('Please enter username and PIN');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        telegram_username: telegramUsername,
+                        pin: pin
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    userId = data.user_id;
+                    username = data.username;
+                    
+                    localStorage.setItem('userId', userId);
+                    localStorage.setItem('username', username);
+                    
+                    showLoggedIn();
+                    loadListings();
+                } else {
+                    alert('Login failed: ' + data.message);
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        // Show logged in state
+        function showLoggedIn() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('tabs').style.display = 'flex';
+            document.getElementById('sellBtn').style.display = 'block';
+            document.getElementById('displayUsername').textContent = username;
+        }
+
+        // Logout
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            
+            if (tab === 'feed') {
+                document.getElementById('feed-section').classList.add('active');
+                loadListings();
+            } else {
+                document.getElementById('mylistings-section').classList.add('active');
+                loadMyListings();
+            }
+        }
+
+        // Go to sell page
+        function goToSell() {
+            window.location.href = '/post';
+        }
+
+        // Load all listings
+        async function loadListings() {
+            try {
+                const res = await fetch('/api/listings');
+                const listings = await res.json();
+                
+                const grid = document.getElementById('listingsGrid');
+                
+                if (!listings || listings.length === 0) {
+                    grid.innerHTML = '<div class="no-listings">No accounts for sale yet</div>';
+                    return;
+                }
+                
+                let html = '';
+                listings.forEach(l => {
+                    // Determine trade type tag class
+                    let tradeClass = 'tag-sale';
+                    let tradeText = 'FOR SALE';
+                    if (l.trade_type === 'FOR EXCHANGE') {
+                        tradeClass = 'tag-exchange';
+                        tradeText = '🔄 EXCHANGE';
+                    } else if (l.trade_type === 'SALE & EXCHANGE') {
+                        tradeClass = 'tag-both';
+                        tradeText = '🔄💰 SALE/EXCHANGE';
+                    }
+                    
+                    // Coin tag
+                    let coinText = l.coin_amount > 0 ? `🪙 ${l.coin_amount} COINS` : '🪙 NO COIN';
+                    
+                    // Link type tag
+                    let linkText = l.link_type === 'KONAMI LINK' ? '🔗 KONAMI' : '🔗 GOOGLE';
+                    
+                    html += `
+                        <div class="listing-card" onclick="viewListing(${l.id})">
+                            <img src="${l.main_screenshot}" class="squad-image" alt="Squad">
+                            <div class="tags-container">
+                                <span class="tag tag-price">💰 ${l.price} ETB</span>
+                                <span class="tag ${tradeClass}">${tradeText}</span>
+                                <span class="tag tag-coin">${coinText}</span>
+                                <span class="tag tag-link">${linkText}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                grid.innerHTML = html;
+                
+            } catch (e) {
+                console.error('Error:', e);
+                document.getElementById('listingsGrid').innerHTML = '<div class="no-listings">Error loading listings</div>';
+            }
+        }
+
+        // Load my listings
+        async function loadMyListings() {
+            try {
+                const res = await fetch('/api/listings');
+                const listings = await res.json();
+                
+                // Filter by current user
+                const myListings = listings.filter(l => l.seller === username);
+                
+                const grid = document.getElementById('myListingsGrid');
+                
+                if (myListings.length === 0) {
+                    grid.innerHTML = '<div class="no-listings">You have no listings</div>';
+                    return;
+                }
+                
+                let html = '';
+                myListings.forEach(l => {
+                    let tradeClass = 'tag-sale';
+                    let tradeText = 'FOR SALE';
+                    if (l.trade_type === 'FOR EXCHANGE') {
+                        tradeClass = 'tag-exchange';
+                        tradeText = '🔄 EXCHANGE';
+                    } else if (l.trade_type === 'SALE & EXCHANGE') {
+                        tradeClass = 'tag-both';
+                        tradeText = '🔄💰 SALE/EXCHANGE';
+                    }
+                    
+                    let coinText = l.coin_amount > 0 ? `🪙 ${l.coin_amount} COINS` : '🪙 NO COIN';
+                    
+                    html += `
+                        <div class="listing-card" onclick="viewListing(${l.id})">
+                            <img src="${l.main_screenshot}" class="squad-image" alt="Squad">
+                            <div class="tags-container">
+                                <span class="tag tag-price">💰 ${l.price} ETB</span>
+                                <span class="tag ${tradeClass}">${tradeText}</span>
+                                <span class="tag tag-coin">${coinText}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                grid.innerHTML = html;
+                
+            } catch (e) {
+                console.error('Error:', e);
+                document.getElementById('myListingsGrid').innerHTML = '<div class="no-listings">Error loading listings</div>';
+            }
+        }
+
+        // Search listings
+        function searchListings() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            // Filtering will be done client-side or you can add API endpoint
+        }
+
+        // View listing detail
+        function viewListing(id) {
+            window.location.href = `/detail/${id}`;
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
