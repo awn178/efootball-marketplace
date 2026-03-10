@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Sell Account - eFootball Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,21 +13,23 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
-            color: white;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            color: #f3f4f6;
             min-height: 100vh;
         }
         header {
-            background: linear-gradient(90deg, #4CAF50, #2196F3);
-            padding: 15px;
+            background: #1f2937;
+            padding: 16px;
             text-align: center;
             font-size: 20px;
             font-weight: 700;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #374151;
+            color: #f3f4f6;
         }
         .container {
             padding: 16px;
@@ -34,86 +37,97 @@
             margin: 0 auto;
         }
         .back-btn {
-            background: #1e2a3a;
-            color: white;
+            background: #374151;
+            color: #f3f4f6;
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #4b5563;
         }
         
         /* Form Card */
         .form-card {
-            background: #16213e;
+            background: #1f2937;
             border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #4CAF50;
+            padding: 24px;
+            border: 1px solid #374151;
             margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         .form-title {
-            color: #4CAF50;
+            color: #2563eb;
             font-size: 18px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 600;
         }
         
         /* Input Groups */
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         .input-group label {
             display: block;
-            color: #8892b0;
+            color: #9ca3af;
             font-size: 13px;
             margin-bottom: 8px;
             font-weight: 500;
         }
         .input-group label.required::after {
             content: " *";
-            color: #f44336;
+            color: #ef4444;
         }
         .form-input {
             width: 100%;
             padding: 14px;
-            background: #1e2a3a;
-            border: 1px solid #2a3a5a;
-            color: white;
+            background: #374151;
+            border: 1px solid #4b5563;
+            color: #f3f4f6;
             border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
+            transition: all 0.2s;
         }
         .form-input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
         }
         .form-input[readonly] {
-            background: #253545;
-            color: #4CAF50;
+            background: #2d3748;
+            color: #10b981;
             font-weight: 500;
+            border-color: #10b981;
         }
         
         /* File Upload */
         .upload-area {
-            background: #1e2a3a;
-            border: 2px dashed #4CAF50;
+            background: #374151;
+            border: 2px dashed #4b5563;
             padding: 30px;
             text-align: center;
             border-radius: 12px;
             cursor: pointer;
             margin-bottom: 10px;
+            transition: all 0.2s;
         }
         .upload-area:hover {
-            background: #253545;
+            border-color: #2563eb;
+            background: #404b5c;
         }
         .file-name {
-            color: #4CAF50;
+            color: #10b981;
             font-size: 12px;
             margin-top: 8px;
         }
@@ -123,20 +137,7 @@
             object-fit: contain;
             border-radius: 8px;
             margin-top: 10px;
-            border: 1px solid #4CAF50;
-        }
-        
-        /* Select Dropdown */
-        .form-select {
-            width: 100%;
-            padding: 14px;
-            background: #1e2a3a;
-            border: 1px solid #2a3a5a;
-            color: white;
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            cursor: pointer;
+            border: 1px solid #4b5563;
         }
         
         /* Radio Group */
@@ -144,44 +145,45 @@
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
-            background: #1e2a3a;
-            padding: 12px;
+            background: #374151;
+            padding: 16px;
             border-radius: 10px;
         }
         .radio-option {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
+            color: #f3f4f6;
         }
         .radio-option input[type="radio"] {
-            accent-color: #4CAF50;
+            accent-color: #2563eb;
             width: 16px;
             height: 16px;
         }
         
         /* Featured Players */
         .players-container {
-            background: #1e2a3a;
-            padding: 15px;
+            background: #374151;
+            padding: 16px;
             border-radius: 10px;
         }
         .player-input-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             align-items: center;
         }
         .player-input-row input {
             flex: 1;
             padding: 12px;
-            background: #16213e;
-            border: 1px solid #2a3a5a;
-            color: white;
+            background: #1f2937;
+            border: 1px solid #4b5563;
+            color: #f3f4f6;
             border-radius: 8px;
         }
         .remove-player {
-            background: #f44336;
+            background: #ef4444;
             color: white;
             border: none;
             width: 40px;
@@ -189,9 +191,13 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 18px;
+            transition: background 0.2s;
+        }
+        .remove-player:hover {
+            background: #dc2626;
         }
         .add-player-btn {
-            background: #2196F3;
+            background: #2563eb;
             color: white;
             border: none;
             padding: 12px;
@@ -199,13 +205,17 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            margin-top: 10px;
+            margin-top: 12px;
+            transition: background 0.2s;
+        }
+        .add-player-btn:hover {
+            background: #1d4ed8;
         }
         
         /* Special Skills */
         .skills-container {
-            background: #1e2a3a;
-            padding: 15px;
+            background: #374151;
+            padding: 16px;
             border-radius: 10px;
             max-height: 300px;
             overflow-y: auto;
@@ -220,19 +230,20 @@
             align-items: center;
             gap: 8px;
             padding: 8px;
-            background: #16213e;
+            background: #1f2937;
             border-radius: 8px;
             cursor: pointer;
+            border: 1px solid #4b5563;
         }
         .skill-checkbox input[type="checkbox"] {
-            accent-color: #4CAF50;
+            accent-color: #2563eb;
             width: 16px;
             height: 16px;
         }
         
         /* Submit Button */
         .submit-btn {
-            background: #4CAF50;
+            background: #10b981;
             color: white;
             border: none;
             padding: 16px;
@@ -241,31 +252,35 @@
             font-weight: 700;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 24px;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover {
+            background: #059669;
         }
         .submit-btn:disabled {
-            background: #555;
+            background: #4b5563;
             cursor: not-allowed;
         }
         
         /* Info Text */
         .info-text {
-            color: #8892b0;
+            color: #9ca3af;
             font-size: 12px;
-            margin-top: 5px;
+            margin-top: 6px;
         }
         .warning-text {
-            color: #FFC107;
+            color: #f59e0b;
             font-size: 12px;
-            margin-top: 5px;
+            margin-top: 6px;
         }
         
         .footer {
             text-align: center;
-            padding: 20px 16px;
-            color: #8892b0;
-            border-top: 1px solid #2a3a5a;
-            margin-top: 20px;
+            padding: 24px 16px;
+            color: #9ca3af;
+            border-top: 1px solid #374151;
+            margin-top: 30px;
             font-size: 12px;
         }
     </style>
@@ -385,14 +400,33 @@
     </div>
 
     <script>
+        // Telegram Web App
+        let tg = window.Telegram?.WebApp;
+        
         // Check if user is logged in
         const username = localStorage.getItem('username');
         if (!username) {
             window.location.href = '/';
         }
 
+        // Auto-fill username from Telegram
+        function initTelegram() {
+            if (tg) {
+                tg.ready();
+                
+                const user = tg.initDataUnsafe?.user;
+                if (user && user.username) {
+                    document.getElementById('sellerUsername').value = '@' + user.username;
+                } else {
+                    document.getElementById('sellerUsername').value = username;
+                }
+            } else {
+                document.getElementById('sellerUsername').value = username;
+            }
+        }
+
         // Set seller username
-        document.getElementById('sellerUsername').value = username;
+        initTelegram();
 
         // Global variables
         let mainSquadBase64 = null;
@@ -479,7 +513,7 @@
                 
                 const container = document.getElementById('skillsContainer');
                 if (skills.length === 0) {
-                    container.innerHTML = '<p style="color: #8892b0;">No skills available</p>';
+                    container.innerHTML = '<p style="color: #9ca3af;">No skills available</p>';
                     return;
                 }
                 
@@ -497,7 +531,7 @@
                 
             } catch (e) {
                 console.error('Error loading skills:', e);
-                document.getElementById('skillsContainer').innerHTML = '<p style="color: #f44336;">Error loading skills</p>';
+                document.getElementById('skillsContainer').innerHTML = '<p style="color: #ef4444;">Error loading skills</p>';
             }
         }
 
