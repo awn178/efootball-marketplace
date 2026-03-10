@@ -8,7 +8,7 @@ import logging
 import sys
 import requests
 from datetime import datetime
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 # Setup logging
@@ -36,6 +36,19 @@ def get_db():
     except Exception as e:
         print(f"❌ Database connection error: {str(e)}")
         raise e
+
+# Send Telegram notification
+def send_telegram(chat_id, message):
+    try:
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        payload = {
+            'chat_id': chat_id,
+            'text': message,
+            'parse_mode': 'HTML'
+        }
+        requests.post(url, json=payload)
+    except Exception as e:
+        print(f"❌ Telegram error: {str(e)}")
 
 # Initialize database tables
 def init_db():
@@ -167,6 +180,78 @@ def login():
 def test():
     return jsonify({'status': 'Marketplace is running!', 'database': 'connected'})
 
+# ==================== TELEGRAM BOT ENDPOINTS ====================
+
+@app.route('/bot', methods=['POST'])
+def bot_webhook():
+    """Telegram bot webhook endpoint for marketplace"""
+    try:
+        data = request.json
+        print(f"🤖 Marketplace bot received: {data}")
+        
+        if data and 'message' in data:
+            chat_id = data['message']['chat']['id']
+            text = data['message'].get('text', '')
+            first_name = data['message']['from'].get('first_name', '')
+            username = data['message']['from'].get('username', '')
+            
+            if text == '/start':
+                # Create inline keyboard with web app button
+                keyboard = {
+                    'inline_keyboard': [[
+                        {
+                            'text': '🛒 Open Marketplace',
+                            'web_app': {'url': 'https://efootball-marketplace.onrender.com'}
+                        }
+                    ]]
+                }
+                
+                # Send welcome message with button
+                welcome = f"👋 Welcome {first_name} to eFootball Marketplace!\n\nBuy and sell eFootball accounts securely."
+                
+                url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+                payload = {
+                    'chat_id': chat_id,
+                    'text': welcome,
+                    'reply_markup': keyboard
+                }
+                requests.post(url, json=payload)
+                print(f"✅ Welcome sent to {chat_id}")
+            
+            elif text == '/help':
+                help_text = "Available commands:\n/start - Open marketplace\n/help - Show this message"
+                send_telegram(chat_id, help_text)
+            
+            elif text == '/ping':
+                send_telegram(chat_id, "pong 🏓")
+        
+        return {'ok': True}
+    except Exception as e:
+        print(f"❌ Bot error: {e}")
+        return {'ok': False}, 500
+
+@app.route('/setbot', methods=['GET'])
+def set_bot_webhook():
+    """Set the bot webhook to marketplace"""
+    webhook_url = "https://efootball-marketplace.onrender.com/bot"
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook?url={webhook_url}"
+    response = requests.get(url)
+    return jsonify(response.json())
+
+@app.route('/botstatus', methods=['GET'])
+def bot_status():
+    """Check bot webhook status"""
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
+    response = requests.get(url)
+    return jsonify(response.json())
+
+@app.route('/deletebot', methods=['GET'])
+def delete_bot_webhook():
+    """Delete the bot webhook"""
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook"
+    response = requests.get(url)
+    return jsonify(response.json())
+
 # ==================== USER ENDPOINTS ====================
 
 # Register/Login user
@@ -205,7 +290,7 @@ def register():
             user_id = user[0]
             is_admin = user[1]
             is_banned = user[2]
-            # Check PIN (in real app, you'd verify here)
+            # In a real app, verify PIN here
         
         conn.commit()
         cur.close()
@@ -341,9 +426,6 @@ def create_listing():
         
         if not all([seller, main_screenshot, overbench_screenshot, price]):
             return jsonify({'success': False, 'message': 'Missing required fields'})
-        
-        # Check for duplicate screenshots (simplified - you'd compare image hashes)
-        # This is a placeholder for duplicate detection
         
         conn = get_db()
         cur = conn.cursor()
@@ -550,7 +632,8 @@ def manage_skills():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Initialize database on startup
+# ==================== INITIALIZATION ====================
+
 print("🚀 Initializing database...")
 init_db()
 
@@ -558,6 +641,8 @@ if __name__ == '__main__':
     try:
         port = int(os.environ.get('PORT', 5000))
         print(f"🚀 Server starting on port {port}")
+        print(f"🤖 Bot webhook: https://efootball-marketplace.onrender.com/bot")
+        print(f"🔗 Set webhook: https://efootball-marketplace.onrender.com/setbot")
         app.run(host='0.0.0.0', port=port)
     except Exception as e:
         print(f"❌ Fatal error: {str(e)}")
