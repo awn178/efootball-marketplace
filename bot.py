@@ -13,21 +13,10 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# Send message function
-def send_message(chat_id, text, parse_mode='HTML'):
-    try:
-        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-        payload = {
-            'chat_id': chat_id,
-            'text': text,
-            'parse_mode': parse_mode
-        }
-        response = requests.post(url, json=payload)
-        logger.info(f"Message sent to {chat_id}: {response.status_code}")
-        return response.json()
-    except Exception as e:
-        logger.error(f"Error sending message: {e}")
-        return None
+# TEST ENDPOINT - Add this first to verify the app is running
+@app.route('/test', methods=['GET'])
+def test():
+    return "✅ Bot service is working!"
 
 # Home route
 @app.route('/', methods=['GET'])
@@ -35,12 +24,21 @@ def home():
     return jsonify({
         'status': 'marketplace bot is running',
         'message': 'eFootball Marketplace Bot',
-        'endpoints': ['/webhook', '/set_webhook', '/get_webhook']
+        'endpoints': ['/test', '/webhook', '/set_webhook', '/get_webhook']
     })
 
-# Webhook endpoint with LAUNCH BUTTON
-@app.route('/webhook', methods=['POST'])
+# Webhook endpoint - handles both GET and POST
+@app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
+    # Handle GET requests (for testing)
+    if request.method == 'GET':
+        return jsonify({
+            'message': 'Webhook endpoint is active',
+            'status': 'ready',
+            'method': 'GET'
+        })
+    
+    # Handle POST requests from Telegram
     try:
         data = request.json
         logger.info(f"📩 Received: {data}")
@@ -49,15 +47,14 @@ def webhook():
             chat_id = data['message']['chat']['id']
             text = data['message'].get('text', '')
             first_name = data['message']['from'].get('first_name', '')
-            username = data['message']['from'].get('username', '')
             
             if text == '/start':
-                # Create inline keyboard with LAUNCH BUTTON
+                # Create inline keyboard with launch button
                 keyboard = {
                     'inline_keyboard': [[
                         {
-                            'text': '🛒 Open Marketplace',  # LAUNCH BUTTON
-                            'web_app': {'url': APP_URL}      # Opens the app
+                            'text': '🛒 Open Marketplace',
+                            'web_app': {'url': APP_URL}
                         }
                     ]]
                 }
@@ -67,11 +64,6 @@ def webhook():
 
 Buy and sell eFootball accounts securely.
 
-• Browse accounts for sale
-• Post your own account
-• Contact trusted admins
-• Secure transactions
-
 👇 Click the button below to open the marketplace:
                 """
                 
@@ -80,26 +72,15 @@ Buy and sell eFootball accounts securely.
                     'chat_id': chat_id,
                     'text': welcome,
                     'parse_mode': 'HTML',
-                    'reply_markup': keyboard  # This adds the button
+                    'reply_markup': keyboard
                 }
                 requests.post(url, json=payload)
                 logger.info(f"✅ Welcome sent to {chat_id}")
             
             elif text == '/help':
-                help_text = """
-<b>📚 Available Commands:</b>
-
-/start - Open marketplace with launch button
-/help - Show this message
-/status - Check bot status
-                """
-                send_message(chat_id, help_text)
-            
-            elif text == '/status':
-                send_message(chat_id, "✅ Bot is running normally")
-            
-            else:
-                send_message(chat_id, "Use /start to open the marketplace")
+                help_text = "Available commands: /start - Open marketplace"
+                requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", 
+                            json={'chat_id': chat_id, 'text': help_text})
         
         return {'ok': True}
     except Exception as e:
@@ -120,14 +101,8 @@ def get_webhook():
     response = requests.get(url)
     return jsonify(response.json())
 
-@app.route('/delete_webhook', methods=['GET'])
-def delete_webhook():
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook"
-    response = requests.get(url)
-    return jsonify(response.json())
-
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     logger.info(f"🤖 Marketplace Bot starting on port {port}")
-    logger.info(f"🚀 Launch button URL: {APP_URL}")
+    logger.info(f"📱 Test endpoint: https://efootball-marketplace-bot.onrender.com/test")
     app.run(host='0.0.0.0', port=port)
