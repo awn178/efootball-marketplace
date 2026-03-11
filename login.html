@@ -73,6 +73,10 @@
         .login-btn:hover {
             background: #1d4ed8;
         }
+        .login-btn:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+        }
         .error-message {
             color: #ef4444;
             text-align: center;
@@ -98,22 +102,11 @@
             color: #059669;
             text-decoration: underline;
         }
-        .role-badge {
-            background: #374151;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #9ca3af;
-            display: inline-block;
-            margin: 0 4px;
-        }
-        .role-owner {
-            color: #10b981;
-            font-weight: 600;
-        }
-        .role-admin {
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
             color: #2563eb;
-            font-weight: 600;
         }
     </style>
 </head>
@@ -123,19 +116,16 @@
             <span>👑</span> ADMIN LOGIN
         </h2>
         
-        <input type="text" id="username" class="login-input" placeholder="Username" autocomplete="off">
-        <input type="password" id="password" class="login-input" placeholder="Password">
+        <input type="text" id="username" class="login-input" placeholder="Telegram Username (with @)" autocomplete="off">
+        <input type="password" id="password" class="login-input" placeholder="PIN">
         
-        <button class="login-btn" onclick="handleLogin()">LOGIN</button>
+        <button class="login-btn" onclick="handleLogin()" id="loginBtn">LOGIN</button>
+        <div id="loading" class="loading">Authenticating...</div>
         
         <div id="errorMsg" class="error-message"></div>
         
         <div class="info-text">
-            <div style="margin-bottom: 8px;">
-                <span class="role-badge"><span class="role-owner">Owner</span>: awnowner</span>
-                <span class="role-badge"><span class="role-admin">Admin</span>: awnadmin</span>
-            </div>
-            <div style="font-size: 11px;">Demo credentials shown above</div>
+            <div>Use your admin credentials</div>
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
@@ -144,39 +134,59 @@
     </div>
 
     <script>
-        function handleLogin() {
+        async function handleLogin() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorDiv = document.getElementById('errorMsg');
+            const loginBtn = document.getElementById('loginBtn');
+            const loading = document.getElementById('loading');
             
             // Clear previous error
             errorDiv.textContent = '';
             
             // Check if fields are empty
             if (!username || !password) {
-                errorDiv.textContent = 'Please enter both username and password';
+                errorDiv.textContent = 'Please enter both username and PIN';
                 return;
             }
             
-            // Check credentials
-            if (username === 'awnowner' && password === '12604') {
-                // Owner login successful
-                localStorage.setItem('adminUser', username);
-                localStorage.setItem('adminRole', 'owner');
-                window.location.href = '/admin';
-                return;
+            // Format username
+            let formattedUsername = username;
+            if (!formattedUsername.startsWith('@')) {
+                formattedUsername = '@' + formattedUsername;
             }
             
-            if (username === 'awnadmin' && password === '11512') {
-                // Admin login successful
-                localStorage.setItem('adminUser', username);
-                localStorage.setItem('adminRole', 'admin');
-                window.location.href = '/admin';
-                return;
-            }
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loading.style.display = 'block';
             
-            // Invalid credentials
-            errorDiv.textContent = 'Invalid username or password';
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        username: formattedUsername,
+                        password: password
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    // Store admin info
+                    localStorage.setItem('adminUser', data.username);
+                    localStorage.setItem('adminRole', data.role);
+                    window.location.href = '/admin';
+                } else {
+                    errorDiv.textContent = data.message || 'Invalid credentials';
+                    loginBtn.disabled = false;
+                    loading.style.display = 'none';
+                }
+            } catch (e) {
+                errorDiv.textContent = 'Connection error';
+                loginBtn.disabled = false;
+                loading.style.display = 'none';
+            }
         }
         
         // Check if already logged in
