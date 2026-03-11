@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sell Account - eFootball Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -15,66 +15,70 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
-            color: #1e293b;
+            background: #0a0c10;
+            color: #e5e7eb;
             min-height: 100vh;
         }
 
         /* Header */
         .header {
-            background: white;
-            padding: 16px 24px;
+            background: #1a1e24;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             position: sticky;
             top: 0;
             z-index: 100;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            color: #2563eb;
+            color: #60a5fa;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .back-btn {
-            background: #e2e8f0;
-            color: #1e293b;
+            background: #2d3748;
+            color: #e5e7eb;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 13px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .back-btn:hover {
-            background: #cbd5e1;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: #374151;
         }
 
         /* Container */
         .container {
             max-width: 600px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 16px;
+            width: 100%;
         }
 
         /* Form Card */
         .form-card {
-            background: white;
+            background: #1a1e24;
             border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 24px;
+            border: 1px solid #2d3748;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             animation: slideIn 0.5s ease;
         }
 
@@ -90,10 +94,10 @@
         }
 
         .form-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 30px;
+            color: #60a5fa;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -102,22 +106,22 @@
         .form-title span {
             background: #2563eb;
             color: white;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         /* Form Sections */
         .form-section {
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #2d3748;
         }
 
         .section-title {
             font-size: 16px;
             font-weight: 600;
-            color: #2563eb;
+            color: #60a5fa;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -131,7 +135,7 @@
 
         .form-group label {
             display: block;
-            color: #64748b;
+            color: #9ca3af;
             font-size: 13px;
             margin-bottom: 6px;
             font-weight: 500;
@@ -145,8 +149,10 @@
         .form-control {
             width: 100%;
             padding: 12px 16px;
-            border: 1px solid #e2e8f0;
+            background: #2d3748;
+            border: 1px solid #4b5563;
             border-radius: 10px;
+            color: #e5e7eb;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             transition: all 0.3s ease;
@@ -154,13 +160,13 @@
 
         .form-control:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
         }
 
         .form-control[readonly] {
-            background: #f8fafc;
-            color: #2563eb;
+            background: #374151;
+            color: #60a5fa;
             font-weight: 500;
         }
 
@@ -176,25 +182,27 @@
         }
 
         .edit-toggle {
-            background: #e2e8f0;
-            border: none;
+            background: #2d3748;
+            border: 1px solid #4b5563;
+            color: #e5e7eb;
             padding: 12px 16px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 13px;
             transition: all 0.3s ease;
             white-space: nowrap;
         }
 
         .edit-toggle:hover {
-            background: #cbd5e1;
-            transform: translateY(-2px);
+            background: #374151;
+            border-color: #60a5fa;
         }
 
         /* File Upload */
         .upload-area {
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
+            background: #2d3748;
+            border: 2px dashed #4b5563;
             border-radius: 12px;
             padding: 30px;
             text-align: center;
@@ -203,25 +211,23 @@
         }
 
         .upload-area:hover {
-            border-color: #2563eb;
-            background: #eef2ff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+            border-color: #60a5fa;
+            background: #374151;
         }
 
         .upload-icon {
             font-size: 32px;
             margin-bottom: 10px;
-            color: #2563eb;
+            color: #60a5fa;
         }
 
         .upload-text {
-            color: #64748b;
+            color: #9ca3af;
             font-size: 14px;
         }
 
         .upload-hint {
-            color: #94a3b8;
+            color: #6b7280;
             font-size: 12px;
             margin-top: 8px;
         }
@@ -232,15 +238,15 @@
             object-fit: contain;
             border-radius: 8px;
             margin-top: 10px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #4b5563;
         }
 
         /* Radio Group */
         .radio-group {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
-            background: #f8fafc;
+            background: #2d3748;
             padding: 15px;
             border-radius: 10px;
         }
@@ -251,25 +257,24 @@
             gap: 8px;
             cursor: pointer;
             padding: 8px 12px;
-            background: white;
+            background: #1a1e24;
             border-radius: 8px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #4b5563;
             transition: all 0.3s ease;
+            color: #e5e7eb;
         }
 
         .radio-option:hover {
-            border-color: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: #60a5fa;
         }
 
         .radio-option input[type="radio"] {
-            accent-color: #2563eb;
+            accent-color: #60a5fa;
         }
 
         /* Players Section */
         .players-container {
-            background: #f8fafc;
+            background: #2d3748;
             padding: 15px;
             border-radius: 10px;
         }
@@ -296,7 +301,6 @@
 
         .remove-player:hover {
             background: #dc2626;
-            transform: translateY(-2px);
         }
 
         .add-player-btn {
@@ -314,12 +318,10 @@
 
         .add-player-btn:hover {
             background: #1d4ed8;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
         }
 
         .add-player-btn:disabled {
-            background: #cbd5e1;
+            background: #4b5563;
             cursor: not-allowed;
         }
 
@@ -331,10 +333,10 @@
 
         /* Skills Grid */
         .skills-container {
-            background: #f8fafc;
+            background: #2d3748;
             padding: 15px;
             border-radius: 10px;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
@@ -348,22 +350,20 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+            padding: 8px;
+            background: #1a1e24;
+            border-radius: 6px;
             cursor: pointer;
+            border: 1px solid #4b5563;
             transition: all 0.3s ease;
         }
 
         .skill-checkbox:hover {
-            border-color: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: #60a5fa;
         }
 
         .skill-checkbox input[type="checkbox"] {
-            accent-color: #2563eb;
+            accent-color: #60a5fa;
         }
 
         /* Submit Button */
@@ -386,30 +386,75 @@
         .submit-btn:hover {
             background: #059669;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16,185,129,0.3);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
 
         .submit-btn:disabled {
-            background: #cbd5e1;
+            background: #4b5563;
             cursor: not-allowed;
+            transform: none;
         }
 
         /* Loading State */
-        .loading {
-            text-align: center;
-            color: #64748b;
-            padding: 40px;
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
-        /* Success Animation */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #2d3748;
+            border-top: 3px solid #60a5fa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
         }
 
-        .success-pulse {
-            animation: pulse 0.5s ease;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #e5e7eb;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .form-card {
+                padding: 16px;
+            }
+
+            .username-field {
+                flex-direction: column;
+            }
+
+            .edit-toggle {
+                width: 100%;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .radio-option {
+                width: 100%;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -419,7 +464,7 @@
             ⚽ eFootball Marketplace
         </div>
         <button class="back-btn" onclick="goBack()">
-            ← BACK TO MARKETPLACE
+            ← BACK
         </button>
     </header>
 
@@ -428,6 +473,12 @@
             <div class="form-title">
                 📝 SELL YOUR ACCOUNT
                 <span>NEW</span>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Posting your listing...</div>
             </div>
 
             <!-- Seller Information -->
@@ -442,7 +493,7 @@
                         <input type="text" id="sellerUsername" class="form-control" readonly>
                         <button class="edit-toggle" onclick="toggleEdit()" id="editBtn">✏️ EDIT</button>
                     </div>
-                    <p style="color: #94a3b8; font-size: 11px; margin-top: 5px;">Your username is auto-filled from Telegram</p>
+                    <p style="color: #6b7280; font-size: 11px; margin-top: 5px;">Your username is auto-filled from Telegram</p>
                 </div>
             </div>
 
@@ -522,7 +573,7 @@
             <!-- Featured Players -->
             <div class="form-section">
                 <div class="section-title">
-                    ⭐ FEATURED PLAYERS
+                    ⭐ FEATURED PLAYERS (Max 4)
                 </div>
 
                 <div class="players-container">
@@ -597,8 +648,8 @@
             } else {
                 field.readOnly = true;
                 btn.textContent = '✏️ EDIT';
-                btn.style.background = '#e2e8f0';
-                btn.style.color = '#1e293b';
+                btn.style.background = '#2d3748';
+                btn.style.color = '#e5e7eb';
             }
         }
 
@@ -606,6 +657,13 @@
         function previewImage(input, previewId) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
+                
+                // Check file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size too large. Maximum 5MB.');
+                    return;
+                }
+                
                 const reader = new FileReader();
                 
                 reader.onload = function(e) {
@@ -664,7 +722,7 @@
                 const container = document.getElementById('skillsContainer');
                 
                 if (!skills || skills.length === 0) {
-                    container.innerHTML = '<p style="color: #64748b;">No skills available</p>';
+                    container.innerHTML = '<p style="color: #9ca3af;">No skills available</p>';
                     return;
                 }
                 
@@ -744,10 +802,12 @@
                 special_skills: skills
             };
             
-            // Disable button and show loading
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
             const submitBtn = document.getElementById('submitBtn');
+            
+            loadingOverlay.style.display = 'flex';
             submitBtn.disabled = true;
-            submitBtn.textContent = 'POSTING...';
             
             try {
                 const res = await fetch('/api/create_listing', {
@@ -759,23 +819,18 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    submitBtn.classList.add('success-pulse');
-                    submitBtn.textContent = '✅ POSTED!';
-                    
-                    setTimeout(() => {
-                        alert('✅ Listing posted successfully!');
-                        window.location.href = '/';
-                    }, 500);
+                    alert('✅ Listing posted successfully!');
+                    window.location.href = '/';
                 } else {
                     alert('Error: ' + (data.message || 'Failed to post'));
+                    loadingOverlay.style.display = 'none';
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '✅ POST LISTING';
                 }
                 
             } catch (e) {
                 alert('Error: ' + e.message);
+                loadingOverlay.style.display = 'none';
                 submitBtn.disabled = false;
-                submitBtn.textContent = '✅ POST LISTING';
             }
         }
 
@@ -788,4 +843,4 @@
         loadSkills();
     </script>
 </body>
-    </html>
+</html>
