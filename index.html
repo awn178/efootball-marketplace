@@ -12,471 +12,783 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-            color: #f3f4f6;
+            background: #f0f2f5;
+            color: #1e293b;
             min-height: 100vh;
         }
-        header {
-            background: #1f2937;
-            padding: 16px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 700;
+
+        /* Facebook-Style Header */
+        .header {
+            background: white;
+            padding: 12px 20px;
             position: sticky;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid #374151;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .container {
-            padding: 16px;
-            max-width: 1200px;
-            margin: 0 auto;
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .sell-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .sell-btn:hover {
+            background: #059669;
+        }
+
+        .listings-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .listings-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .username-badge {
+            background: #eef2ff;
+            color: #2563eb;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         /* Login Section */
         .login-section {
-            background: #1f2937;
-            padding: 24px;
+            background: white;
             border-radius: 16px;
-            margin-bottom: 20px;
-            border: 1px solid #374151;
+            padding: 30px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
+
         .login-section h2 {
-            color: #2563eb;
+            color: #1e293b;
             margin-bottom: 20px;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 24px;
+            text-align: center;
         }
+
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
+
         .input-group label {
             display: block;
-            color: #9ca3af;
+            color: #64748b;
             font-size: 13px;
             margin-bottom: 6px;
             font-weight: 500;
         }
+
         .login-input {
             width: 100%;
-            padding: 14px;
-            background: #374151;
-            border: 1px solid #4b5563;
-            color: #f3f4f6;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
             border-radius: 10px;
             font-family: 'Inter', sans-serif;
-            font-size: 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
+
         .login-input:focus {
             outline: none;
             border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
         }
-        .login-input[readonly] {
-            background: #2d3748;
-            color: #10b981;
-            font-weight: 500;
-        }
-        .username-edit {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .username-edit input {
-            flex: 1;
-        }
-        .edit-toggle {
-            background: #374151;
-            color: #f3f4f6;
-            border: 1px solid #4b5563;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .edit-toggle:hover {
-            background: #4b5563;
-        }
+
         .login-btn {
+            width: 100%;
+            padding: 12px;
             background: #2563eb;
             color: white;
             border: none;
-            padding: 14px;
-            width: 100%;
             border-radius: 10px;
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 8px;
+            transition: all 0.3s ease;
         }
+
+        .login-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
         .login-btn.secondary {
-            background: #374151;
-            margin-top: 8px;
+            background: #e2e8f0;
+            color: #1e293b;
+            margin-top: 10px;
         }
-        
-        /* Rest of your existing CSS remains the same */
-        .user-info { /* ... */ }
-        .tabs { /* ... */ }
-        .listings-grid { /* ... */ }
-        .listing-card { /* ... */ }
-        .tags-container { /* ... */ }
-        .tag { /* ... */ }
-        
+
+        .login-btn.secondary:hover {
+            background: #cbd5e1;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Feed Grid */
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Listing Card - Facebook Style */
+        .listing-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.2);
+        }
+
+        /* Image Container - Fixed aspect ratio */
+        .image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .listing-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .listing-card:hover .listing-image {
+            transform: scale(1.05);
+        }
+
+        /* Floating Tags - Modern Design */
+        .floating-tags {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tag:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .tag-price {
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+        }
+
+        .tag-sale {
+            background: rgba(37, 99, 235, 0.95);
+            color: white;
+        }
+
+        .tag-exchange {
+            background: rgba(139, 92, 246, 0.95);
+            color: white;
+        }
+
+        .tag-both {
+            background: rgba(245, 158, 11, 0.95);
+            color: white;
+        }
+
+        .tag-coin {
+            background: rgba(245, 158, 11, 0.95);
+            color: white;
+        }
+
+        .tag-link {
+            background: rgba(100, 116, 139, 0.95);
+            color: white;
+        }
+
+        /* Card Content */
+        .card-content {
+            padding: 16px;
+        }
+
+        .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .seller-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .seller-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .listing-stats {
+            display: flex;
+            gap: 15px;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        /* Action Buttons for My Listings */
+        .listing-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .no-listings {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            color: #64748b;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <header>
-        🛒 eFOOTBALL MARKETPLACE
-    </header>
-
-    <div class="container">
-        <!-- Login Section -->
-        <div class="login-section" id="loginSection">
-            <h2>🔐 LOGIN / REGISTER</h2>
-            <div class="input-group">
-                <label>Telegram Username</label>
-                <div class="username-edit">
-                    <input type="text" id="telegramUsername" class="login-input" placeholder="@username">
-                    <button class="edit-toggle" onclick="toggleUsernameEdit()" id="editToggleBtn">✏️ Edit</button>
-                </div>
-                <p style="color: #9ca3af; font-size: 11px; margin-top: 5px;" id="usernameHint">Auto-filled from Telegram. Click edit to change.</p>
-            </div>
-            <div class="input-group">
-                <label>PIN (4-6 digits)</label>
-                <input type="password" id="pin" class="login-input" placeholder="••••" maxlength="6">
-            </div>
-            <button class="login-btn" onclick="login()" id="loginBtn">LOGIN</button>
-            <button class="login-btn secondary" onclick="register()" id="registerBtn">REGISTER</button>
+    <!-- Login Section (Hidden after login) -->
+    <div id="loginSection" class="login-section">
+        <h2>🔐 Welcome to eFootball Marketplace</h2>
+        <div class="input-group">
+            <label>Telegram Username</label>
+            <input type="text" id="telegramUsername" class="login-input" placeholder="@username">
         </div>
+        <div class="input-group">
+            <label>PIN (4-6 digits)</label>
+            <input type="password" id="pin" class="login-input" placeholder="••••" maxlength="6">
+        </div>
+        <button class="login-btn" onclick="handleLogin()">LOGIN</button>
+        <button class="login-btn secondary" onclick="handleRegister()">REGISTER</button>
+        <div id="loginMessage" style="text-align: center; margin-top: 15px; color: #ef4444; font-size: 13px;"></div>
+    </div>
 
-        <!-- User Info (after login) -->
-        <div class="user-info" id="userInfo" style="display: none;">
-            <div>
+    <!-- Main App (Hidden until login) -->
+    <div id="mainApp" style="display: none;">
+        <!-- Facebook-Style Header -->
+        <header class="header">
+            <div class="logo">
+                ⚽ eFootball Marketplace
+            </div>
+
+            <div class="search-box">
+                <i>🔍</i>
+                <input type="text" placeholder="Search by player..." id="searchInput" onkeyup="searchListings()">
+            </div>
+
+            <div class="nav-buttons">
                 <span class="username-badge" id="displayUsername"></span>
+                <button class="nav-btn sell-btn" onclick="goToSell()">
+                    ➕ SELL
+                </button>
+                <button class="nav-btn listings-btn" onclick="showMyListings()">
+                    📋 MY LISTINGS
+                </button>
+                <button class="nav-btn logout-btn" onclick="logout()">
+                    🚪 LOGOUT
+                </button>
             </div>
-            <button class="logout-btn" onclick="logout()">LOGOUT</button>
-        </div>
+        </header>
 
-        <!-- Tabs -->
-        <div class="tabs" id="tabs" style="display: none;">
-            <div class="tab active" onclick="switchTab('feed')">🛒 MARKETPLACE</div>
-            <div class="tab" onclick="switchTab('mylistings')">📋 MY LISTINGS</div>
-        </div>
-
-        <!-- SELL BUTTON -->
-        <button class="sell-btn" onclick="goToSell()" id="sellBtn" style="display: none;">
-            ➕ SELL ACCOUNT
-        </button>
-
-        <!-- MAIN FEED -->
-        <div id="feed-section" class="section active">
-            <div id="listingsGrid" class="listings-grid">
-                <div class="loading">Loading listings...</div>
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Feed Section -->
+            <div id="feedSection">
+                <div id="listingsGrid" class="feed-grid">
+                    <div class="loading">Loading listings...</div>
+                </div>
             </div>
-        </div>
 
-        <!-- MY LISTINGS -->
-        <div id="mylistings-section" class="section">
-            <div id="myListingsGrid" class="listings-grid">
-                <div class="loading">Loading your listings...</div>
+            <!-- My Listings Section (Hidden by default) -->
+            <div id="myListingsSection" style="display: none;">
+                <h2 style="margin-bottom: 20px; color: #1e293b;">My Listings</h2>
+                <div id="myListingsGrid" class="feed-grid">
+                    <div class="loading">Loading your listings...</div>
+                </div>
+                <button class="nav-btn sell-btn" onclick="showFeed()" style="margin-top: 20px;">
+                    ← BACK TO FEED
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Telegram Web App
         let tg = window.Telegram?.WebApp;
         let userId = null;
         let username = null;
-        let isAdmin = false;
-        let telegramUser = null;
 
         // Initialize Telegram
-        function initTelegram() {
-            if (tg) {
-                tg.ready();
-                tg.expand();
-                
-                const user = tg.initDataUnsafe?.user;
-                if (user) {
-                    telegramUser = user;
-                    const usernameField = document.getElementById('telegramUsername');
-                    
-                    // Auto-fill with Telegram username
-                    if (user.username) {
-                        usernameField.value = '@' + user.username;
-                    } else if (user.first_name) {
-                        usernameField.value = '@' + user.first_name.toLowerCase().replace(/\s+/g, '');
-                    }
-                    
-                    // Store Telegram data
-                    window.telegramUser = {
-                        id: user.id,
-                        username: usernameField.value,
-                        first_name: user.first_name,
-                        chat_id: user.id
-                    };
-                }
+        if (tg) {
+            tg.ready();
+            const user = tg.initDataUnsafe?.user;
+            if (user && user.username) {
+                document.getElementById('telegramUsername').value = '@' + user.username;
             }
         }
 
-        // Toggle username edit
-        function toggleUsernameEdit() {
-            const field = document.getElementById('telegramUsername');
-            const btn = document.getElementById('editToggleBtn');
-            
-            if (field.readOnly) {
-                field.readOnly = false;
-                field.focus();
-                btn.textContent = '🔒 Lock';
-                document.getElementById('usernameHint').textContent = 'You can now edit your username';
-            } else {
-                field.readOnly = true;
-                btn.textContent = '✏️ Edit';
-                document.getElementById('usernameHint').textContent = 'Username locked. Click edit to change.';
-            }
+        // Check saved login
+        const savedUser = localStorage.getItem('username');
+        const savedId = localStorage.getItem('userId');
+        if (savedUser && savedId) {
+            username = savedUser;
+            userId = savedId;
+            showMainApp();
+            loadListings();
         }
 
-        // Initialize
-        function init() {
-            initTelegram();
-            
-            // Make username editable if Telegram didn't provide one
-            const usernameField = document.getElementById('telegramUsername');
-            if (!usernameField.value) {
-                usernameField.readOnly = false;
-                document.getElementById('editToggleBtn').style.display = 'none';
-                document.getElementById('usernameHint').textContent = 'Enter your Telegram username';
-            }
-            
-            const savedUser = localStorage.getItem('username');
-            const savedId = localStorage.getItem('userId');
-            
-            if (savedUser && savedId) {
-                username = savedUser;
-                userId = savedId;
-                showLoggedIn();
-                loadListings();
-            }
-        }
-
-        // Register
-        async function register() {
-            let telegramUsername = document.getElementById('telegramUsername').value.trim();
-            const pin = document.getElementById('pin').value.trim();
-            const chatId = window.telegramUser?.id || null;
-            
-            if (!telegramUsername) {
-                alert('Please enter Telegram username');
-                return;
-            }
-            
-            if (!pin || pin.length < 4 || pin.length > 6) {
-                alert('PIN must be 4-6 digits');
-                return;
-            }
-            
-            if (!telegramUsername.startsWith('@')) {
-                telegramUsername = '@' + telegramUsername;
-            }
-            
-            try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        telegram_username: telegramUsername,
-                        pin: pin,
-                        chat_id: chatId
-                    })
-                });
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    userId = data.user_id;
-                    username = data.username;
-                    
-                    localStorage.setItem('userId', userId);
-                    localStorage.setItem('username', username);
-                    
-                    showLoggedIn();
-                    loadListings();
-                } else {
-                    alert('Registration failed: ' + data.message);
-                }
-            } catch (e) {
-                alert('Error: ' + e.message);
-            }
-        }
-
-        // Login
-        async function login() {
-            let telegramUsername = document.getElementById('telegramUsername').value.trim();
-            const pin = document.getElementById('pin').value.trim();
-            const chatId = window.telegramUser?.id || null;
-            
-            if (!telegramUsername || !pin) {
-                alert('Please enter username and PIN');
-                return;
-            }
-            
-            if (!telegramUsername.startsWith('@')) {
-                telegramUsername = '@' + telegramUsername;
-            }
-            
-            try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        telegram_username: telegramUsername,
-                        pin: pin,
-                        chat_id: chatId
-                    })
-                });
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    userId = data.user_id;
-                    username = data.username;
-                    isAdmin = data.is_admin;
-                    
-                    localStorage.setItem('userId', userId);
-                    localStorage.setItem('username', username);
-                    
-                    showLoggedIn();
-                    loadListings();
-                } else {
-                    alert('Login failed: ' + data.message);
-                }
-            } catch (e) {
-                alert('Error: ' + e.message);
-            }
-        }
-
-        // Show logged in state
-        function showLoggedIn() {
+        function showMainApp() {
             document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('userInfo').style.display = 'flex';
-            document.getElementById('tabs').style.display = 'flex';
-            document.getElementById('sellBtn').style.display = 'block';
+            document.getElementById('mainApp').style.display = 'block';
             document.getElementById('displayUsername').textContent = username;
         }
 
-        // Logout
+        function showMessage(msg, isError = true) {
+            document.getElementById('loginMessage').textContent = msg;
+        }
+
+        async function handleRegister() {
+            let telegramUsername = document.getElementById('telegramUsername').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+
+            if (!telegramUsername) {
+                showMessage('Please enter username');
+                return;
+            }
+            if (!pin || pin.length < 4 || pin.length > 6) {
+                showMessage('PIN must be 4-6 digits');
+                return;
+            }
+
+            if (!telegramUsername.startsWith('@')) {
+                telegramUsername = '@' + telegramUsername;
+            }
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        telegram_username: telegramUsername,
+                        pin: pin,
+                        chat_id: tg?.initDataUnsafe?.user?.id
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    userId = data.user_id;
+                    username = data.username;
+                    localStorage.setItem('userId', userId);
+                    localStorage.setItem('username', username);
+                    showMainApp();
+                    loadListings();
+                } else {
+                    showMessage(data.message || 'Registration failed');
+                }
+            } catch (e) {
+                showMessage('Error: ' + e.message);
+            }
+        }
+
+        async function handleLogin() {
+            let telegramUsername = document.getElementById('telegramUsername').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+
+            if (!telegramUsername || !pin) {
+                showMessage('Please enter username and PIN');
+                return;
+            }
+
+            if (!telegramUsername.startsWith('@')) {
+                telegramUsername = '@' + telegramUsername;
+            }
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        telegram_username: telegramUsername,
+                        pin: pin,
+                        chat_id: tg?.initDataUnsafe?.user?.id
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    userId = data.user_id;
+                    username = data.username;
+                    localStorage.setItem('userId', userId);
+                    localStorage.setItem('username', username);
+                    showMainApp();
+                    loadListings();
+                } else {
+                    showMessage(data.message || 'Login failed. Please register first.');
+                }
+            } catch (e) {
+                showMessage('Error: ' + e.message);
+            }
+        }
+
         function logout() {
             localStorage.clear();
             location.reload();
         }
 
-        // Switch tabs
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            
-            if (tab === 'feed') {
-                document.getElementById('feed-section').classList.add('active');
-                loadListings();
-            } else {
-                document.getElementById('mylistings-section').classList.add('active');
-                loadMyListings();
-            }
-        }
-
-        // Go to sell page
         function goToSell() {
             window.location.href = '/post';
         }
 
-        // Load listings
+        function showFeed() {
+            document.getElementById('feedSection').style.display = 'block';
+            document.getElementById('myListingsSection').style.display = 'none';
+            loadListings();
+        }
+
+        function showMyListings() {
+            document.getElementById('feedSection').style.display = 'none';
+            document.getElementById('myListingsSection').style.display = 'block';
+            loadMyListings();
+        }
+
         async function loadListings() {
             try {
                 const res = await fetch('/api/listings');
                 const listings = await res.json();
-                
+
                 const grid = document.getElementById('listingsGrid');
-                
+
                 if (!listings || listings.length === 0) {
                     grid.innerHTML = '<div class="no-listings">No accounts for sale yet</div>';
                     return;
                 }
-                
+
                 let html = '';
                 listings.forEach(l => {
-                    let tradeClass = l.trade_type === 'FOR EXCHANGE' ? 'tag-exchange' : 
-                                    (l.trade_type === 'SALE & EXCHANGE' ? 'tag-both' : 'tag-sale');
-                    
+                    let tradeClass = 'tag-sale';
+                    let tradeText = 'FOR SALE';
+                    if (l.trade_type === 'FOR EXCHANGE') {
+                        tradeClass = 'tag-exchange';
+                        tradeText = 'EXCHANGE';
+                    } else if (l.trade_type === 'SALE & EXCHANGE') {
+                        tradeClass = 'tag-both';
+                        tradeText = 'SALE/EXCHANGE';
+                    }
+
                     html += `
                         <div class="listing-card" onclick="viewListing(${l.id})">
-                            <img src="${l.main_screenshot}" class="squad-image" alt="Squad">
-                            <div class="tags-container">
-                                <span class="tag tag-price">💰 ${l.price} ETB</span>
-                                <span class="tag ${tradeClass}">${l.trade_type}</span>
-                                <span class="tag tag-coin">${l.coin_amount > 0 ? `🪙 ${l.coin_amount}` : '🪙 NO COIN'}</span>
-                                <span class="tag tag-link">${l.link_type}</span>
+                            <div class="image-container">
+                                <img src="${l.main_screenshot}" class="listing-image" alt="Squad">
+                                <div class="floating-tags">
+                                    <span class="tag tag-price">💰 ${l.price} ETB</span>
+                                    <span class="tag ${tradeClass}">${tradeText}</span>
+                                    <span class="tag tag-coin">${l.coin_amount > 0 ? `🪙 ${l.coin_amount}` : '🪙 NO COIN'}</span>
+                                    <span class="tag tag-link">${l.link_type}</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="seller-info">
+                                    <div class="seller-avatar">${l.seller.charAt(1)}</div>
+                                    <span class="seller-name">${l.seller}</span>
+                                </div>
+                                <div class="listing-stats">
+                                    <span>📅 ${new Date(l.created).toLocaleDateString()}</span>
+                                </div>
                             </div>
                         </div>
                     `;
                 });
-                
+
                 grid.innerHTML = html;
-                
+
             } catch (e) {
-                console.error('Error:', e);
+                console.error(e);
                 document.getElementById('listingsGrid').innerHTML = '<div class="no-listings">Error loading listings</div>';
             }
         }
 
-        // Load my listings
         async function loadMyListings() {
             try {
-                const res = await fetch('/api/listings');
+                const res = await fetch(`/api/listings?user=${username}`);
                 const listings = await res.json();
-                
-                const myListings = listings.filter(l => l.seller === username);
-                
+
                 const grid = document.getElementById('myListingsGrid');
-                
-                if (myListings.length === 0) {
-                    grid.innerHTML = '<div class="no-listings">You have no listings</div>';
+
+                if (!listings || listings.length === 0) {
+                    grid.innerHTML = '<div class="no-listings">You have no listings. Click SELL to create one!</div>';
                     return;
                 }
-                
+
                 let html = '';
-                myListings.forEach(l => {
+                listings.forEach(l => {
+                    let tradeClass = 'tag-sale';
+                    let tradeText = 'FOR SALE';
+                    if (l.trade_type === 'FOR EXCHANGE') {
+                        tradeClass = 'tag-exchange';
+                        tradeText = 'EXCHANGE';
+                    } else if (l.trade_type === 'SALE & EXCHANGE') {
+                        tradeClass = 'tag-both';
+                        tradeText = 'SALE/EXCHANGE';
+                    }
+
                     html += `
-                        <div class="listing-card" onclick="viewListing(${l.id})">
-                            <img src="${l.main_screenshot}" class="squad-image" alt="Squad">
-                            <div class="tags-container">
-                                <span class="tag tag-price">💰 ${l.price} ETB</span>
-                                <span class="tag ${l.trade_type === 'FOR EXCHANGE' ? 'tag-exchange' : 'tag-sale'}">${l.trade_type}</span>
-                                <span class="tag tag-coin">${l.coin_amount > 0 ? `🪙 ${l.coin_amount}` : '🪙 NO COIN'}</span>
+                        <div class="listing-card">
+                            <div class="image-container">
+                                <img src="${l.main_screenshot}" class="listing-image" alt="Squad">
+                                <div class="floating-tags">
+                                    <span class="tag tag-price">💰 ${l.price} ETB</span>
+                                    <span class="tag ${tradeClass}">${tradeText}</span>
+                                    <span class="tag tag-coin">${l.coin_amount > 0 ? `🪙 ${l.coin_amount}` : '🪙 NO COIN'}</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="seller-info">
+                                    <div class="seller-avatar">${l.seller.charAt(1)}</div>
+                                    <span class="seller-name">${l.seller}</span>
+                                </div>
+                                <div class="listing-actions">
+                                    <button class="action-btn edit-btn" onclick="editListing(${l.id})">✏️ Edit</button>
+                                    <button class="action-btn delete-btn" onclick="deleteListing(${l.id})">🗑️ Delete</button>
+                                </div>
                             </div>
                         </div>
                     `;
                 });
-                
+
                 grid.innerHTML = html;
-                
+
             } catch (e) {
-                console.error('Error:', e);
+                console.error(e);
                 document.getElementById('myListingsGrid').innerHTML = '<div class="no-listings">Error loading listings</div>';
             }
         }
 
-        // View listing
+        function searchListings() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            // Client-side filtering can be added here
+        }
+
         function viewListing(id) {
             window.location.href = `/detail/${id}`;
         }
 
-        // Initialize
-        init();
+        function editListing(id) {
+            alert('Edit feature coming soon');
+        }
+
+        async function deleteListing(id) {
+            if (!confirm('Delete this listing?')) return;
+
+            try {
+                const res = await fetch(`/api/delete_listing/${id}`, {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ username: username })
+                });
+
+                if (res.ok) {
+                    loadMyListings();
+                }
+            } catch (e) {
+                alert('Error deleting listing');
+            }
+        }
     </script>
 </body>
 </html>
