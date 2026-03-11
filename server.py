@@ -7,7 +7,8 @@ import base64
 import logging
 import sys
 import requests
-from datetime import datetime
+import hashlib
+from datetime import datetime, date, timedelta
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
@@ -49,6 +50,49 @@ def send_telegram(chat_id, message):
     except Exception as e:
         print(f"❌ Telegram error: {str(e)}")
 
+# Generate image hash for duplicate detection
+def generate_image_hash(image_data):
+    """Generate a hash from image data to detect duplicates"""
+    if ',' in image_data:
+        image_data = image_data.split(',')[1]
+    return hashlib.md5(image_data.encode()[:1000]).hexdigest()
+
+# Check daily posting limit
+def check_daily_limit(username):
+    """Check if user has exceeded daily posting limit (4 per day)"""
+    conn = get_db()
+    cur = conn.cursor()
+    today = date.today()
+    
+    cur.execute("""
+        SELECT COUNT(*) FROM listings 
+        WHERE seller_username = %s AND DATE(created_at) = %s
+    """, (username, today))
+    
+    count = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    
+    return count < 4
+
+# Check for duplicate listing
+def check_duplicate_listing(main_hash, over_hash):
+    """Check if screenshots already exist in another listing"""
+    conn = get_db()
+    cur = conn.cursor()
+    
+    # Store hashes with listing for future duplicate checking
+    cur.execute("""
+        SELECT id FROM listings 
+        WHERE main_squad_hash = %s OR overbench_hash = %s
+    """, (main_hash, over_hash))
+    
+    duplicate = cur.fetchone() is not None
+    cur.close()
+    conn.close()
+    
+    return duplicate
+
 # Initialize database tables
 def init_db():
     try:
@@ -67,17 +111,21 @@ def init_db():
                 admin_role VARCHAR(50),
                 is_banned BOOLEAN DEFAULT FALSE,
                 joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                chat_id BIGINT
+                chat_id BIGINT,
+                daily_post_count INTEGER DEFAULT 0,
+                last_post_date DATE
             )
         """)
         
-        # Listings table
+        # Listings table with hash fields for duplicate detection
         cur.execute("""
             CREATE TABLE IF NOT EXISTS listings (
                 id SERIAL PRIMARY KEY,
                 seller_username VARCHAR(255) NOT NULL REFERENCES users(telegram_username),
                 main_squad_screenshot TEXT NOT NULL,
+                main_squad_hash VARCHAR(64),
                 overbench_screenshot TEXT NOT NULL,
+                overbench_hash VARCHAR(64),
                 price INTEGER NOT NULL,
                 featured_players TEXT,
                 special_skills TEXT,
@@ -89,6 +137,11 @@ def init_db():
                 is_sold BOOLEAN DEFAULT FALSE
             )
         """)
+        
+        # Create index for faster searches
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_listings_featured ON listings(featured_players)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_listings_skills ON listings(special_skills)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_listings_price ON listings(price)")
         
         # Admins table
         cur.execute("""
@@ -163,7 +216,6 @@ def post():
 def admin():
     return send_from_directory('.', 'admin.html')
 
-# THIS SERVES THE LOGIN HTML PAGE
 @app.route('/login')
 def login_page():
     return send_from_directory('.', 'login.html')
@@ -185,7 +237,6 @@ def bot_webhook():
             first_name = data['message']['from'].get('first_name', '')
             username = data['message']['from'].get('username', '')
             
-            # Save chat_id
             if username:
                 conn = get_db()
                 cur = conn.cursor()
@@ -262,7 +313,6 @@ def register():
         conn = get_db()
         cur = conn.cursor()
         
-        # Check if user exists
         cur.execute("SELECT id FROM users WHERE telegram_username = %s", (username,))
         existing = cur.fetchone()
         
@@ -271,7 +321,6 @@ def register():
             conn.close()
             return jsonify({'success': False, 'message': 'User already exists. Please login.'})
         
-        # Create new user
         cur.execute("""
             INSERT INTO users (telegram_username, pin, chat_id) 
             VALUES (%s, %s, %s) RETURNING id
@@ -335,6 +384,8 @@ def login():
 def get_listings():
     try:
         user = request.args.get('user')
+        search = request.args.get('search', '').lower()
+        
         conn = get_db()
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         
@@ -344,6 +395,18 @@ def get_listings():
                 WHERE seller_username = %s 
                 ORDER BY created_at DESC
             """, (user,))
+        elif search:
+            # Search by price, featured players, or special skills
+            cur.execute("""
+                SELECT * FROM listings 
+                WHERE is_active = TRUE AND is_sold = FALSE 
+                AND (
+                    price::text LIKE %s OR
+                    LOWER(featured_players) LIKE %s OR
+                    LOWER(special_skills) LIKE %s
+                )
+                ORDER BY created_at DESC
+            """, (f'%{search}%', f'%{search}%', f'%{search}%'))
         else:
             cur.execute("""
                 SELECT * FROM listings 
@@ -445,6 +508,18 @@ def create_listing():
         if not all([seller, main_screenshot, overbench_screenshot, price]):
             return jsonify({'success': False, 'message': 'Missing fields'})
         
+        # Check daily limit
+        if not check_daily_limit(seller):
+            return jsonify({'success': False, 'message': 'Daily posting limit reached (max 4 per day)'})
+        
+        # Generate image hashes for duplicate detection
+        main_hash = generate_image_hash(main_screenshot)
+        over_hash = generate_image_hash(overbench_screenshot)
+        
+        # Check for duplicates
+        if check_duplicate_listing(main_hash, over_hash):
+            return jsonify({'success': False, 'message': 'This account has already been listed'})
+        
         conn = get_db()
         cur = conn.cursor()
         
@@ -453,14 +528,23 @@ def create_listing():
         
         cur.execute("""
             INSERT INTO listings 
-            (seller_username, main_squad_screenshot, overbench_screenshot, price, 
+            (seller_username, main_squad_screenshot, main_squad_hash, overbench_screenshot, overbench_hash, price, 
              featured_players, special_skills, coin_amount, trade_type, link_type)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
-        """, (seller, main_screenshot, overbench_screenshot, price, 
+        """, (seller, main_screenshot, main_hash, overbench_screenshot, over_hash, price, 
               featured_str, skills_str, coins, trade_type, link_type))
         
         listing_id = cur.fetchone()[0]
+        
+        # Update user's daily post count
+        cur.execute("""
+            UPDATE users SET 
+                daily_post_count = COALESCE(daily_post_count, 0) + 1,
+                last_post_date = CURRENT_DATE
+            WHERE telegram_username = %s
+        """, (seller,))
+        
         conn.commit()
         cur.close()
         conn.close()
@@ -468,6 +552,7 @@ def create_listing():
         return jsonify({'success': True, 'listing_id': listing_id})
         
     except Exception as e:
+        print(f"❌ Create listing error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/delete_listing/<int:listing_id>', methods=['DELETE'])
@@ -506,9 +591,8 @@ def get_skills():
 
 # ==================== ADMIN ENDPOINTS ====================
 
-# THIS IS THE FIXED ADMIN API LOGIN - renamed to admin_api_login
 @app.route('/api/admin/login', methods=['POST'])
-def admin_api_login():  # Renamed from admin_login to avoid conflict
+def admin_api_login():
     try:
         data = request.json
         username = data.get('username')
@@ -630,11 +714,19 @@ def add_admin():
         profile = data.get('profile_photo')
         payment = data.get('payment')
         
+        if not name or not telegram:
+            return jsonify({'success': False, 'message': 'Name and Telegram are required'}), 400
+        
         if not telegram.startswith('@'):
             telegram = '@' + telegram
         
         conn = get_db()
         cur = conn.cursor()
+        
+        # Check if admin already exists
+        cur.execute("SELECT id FROM admins WHERE telegram_username = %s", (telegram,))
+        if cur.fetchone():
+            return jsonify({'success': False, 'message': 'Admin already exists'}), 400
         
         cur.execute("""
             INSERT INTO admins (name, telegram_username, profile_photo, payment_method)
@@ -644,6 +736,7 @@ def add_admin():
         
         admin_id = cur.fetchone()[0]
         
+        # Also add to users table as admin
         cur.execute("""
             INSERT INTO users (telegram_username, pin, is_admin, admin_role)
             VALUES (%s, 'admin123', TRUE, 'admin')
@@ -669,14 +762,26 @@ def update_admin(admin_id):
         conn = get_db()
         cur = conn.cursor()
         
-        cur.execute("""
-            UPDATE admins SET 
-                name = COALESCE(%s, name),
-                telegram_username = COALESCE(%s, telegram_username),
-                profile_photo = COALESCE(%s, profile_photo),
-                payment_method = COALESCE(%s, payment_method)
-            WHERE id = %s
-        """, (name, telegram, profile, payment, admin_id))
+        updates = []
+        params = []
+        
+        if name:
+            updates.append("name = %s")
+            params.append(name)
+        if telegram:
+            updates.append("telegram_username = %s")
+            params.append(telegram)
+        if profile:
+            updates.append("profile_photo = %s")
+            params.append(profile)
+        if payment:
+            updates.append("payment_method = %s")
+            params.append(payment)
+        
+        if updates:
+            query = f"UPDATE admins SET {', '.join(updates)} WHERE id = %s"
+            params.append(admin_id)
+            cur.execute(query, params)
         
         conn.commit()
         cur.close()
@@ -717,9 +822,23 @@ def manual_post():
         coins = data.get('coin_amount', 0)
         trade_type = data.get('trade_type', 'FOR SALE')
         link_type = data.get('link_type', 'KONAMI LINK')
+        featured = data.get('featured_players', [])
+        skills = data.get('special_skills', [])
         
         if not all([seller, main, over, price]):
             return jsonify({'success': False, 'message': 'Missing fields'})
+        
+        # Check daily limit
+        if not check_daily_limit(seller):
+            return jsonify({'success': False, 'message': 'Daily posting limit reached for this user'})
+        
+        # Generate image hashes for duplicate detection
+        main_hash = generate_image_hash(main)
+        over_hash = generate_image_hash(over)
+        
+        # Check for duplicates
+        if check_duplicate_listing(main_hash, over_hash):
+            return jsonify({'success': False, 'message': 'This account has already been listed'})
         
         conn = get_db()
         cur = conn.cursor()
@@ -733,21 +852,34 @@ def manual_post():
             default_pin = str(random.randint(1000, 9999))
             cur.execute("INSERT INTO users (telegram_username, pin) VALUES (%s, %s)", (seller, default_pin))
         
+        featured_str = ','.join(featured[:4])
+        skills_str = ','.join(skills)
+        
         cur.execute("""
             INSERT INTO listings 
-            (seller_username, main_squad_screenshot, overbench_screenshot, price, 
-             coin_amount, trade_type, link_type, featured_players, special_skills)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, '', '')
+            (seller_username, main_squad_screenshot, main_squad_hash, overbench_screenshot, overbench_hash, 
+             price, coin_amount, trade_type, link_type, featured_players, special_skills)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
-        """, (seller, main, over, price, coins, trade_type, link_type))
+        """, (seller, main, main_hash, over, over_hash, price, coins, trade_type, link_type, featured_str, skills_str))
         
         listing_id = cur.fetchone()[0]
+        
+        # Update user's daily post count
+        cur.execute("""
+            UPDATE users SET 
+                daily_post_count = COALESCE(daily_post_count, 0) + 1,
+                last_post_date = CURRENT_DATE
+            WHERE telegram_username = %s
+        """, (seller,))
+        
         conn.commit()
         cur.close()
         conn.close()
         
         return jsonify({'success': True, 'listing_id': listing_id})
     except Exception as e:
+        print(f"❌ Manual post error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/admin/skills', methods=['POST', 'PUT', 'DELETE'])
