@@ -14,7 +14,6 @@ from flask_cors import CORS
 # Setup logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 print("🛒 EFOOTBALL MARKETPLACE SERVER STARTING")
-print("✅ Debug mode ON")
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
@@ -58,7 +57,7 @@ def init_db():
         
         print("📦 Creating database tables...")
         
-        # Users table (sellers/buyers)
+        # Users table
         cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -68,13 +67,11 @@ def init_db():
                 admin_role VARCHAR(50),
                 is_banned BOOLEAN DEFAULT FALSE,
                 joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                chat_id BIGINT,
-                profile_photo TEXT
+                chat_id BIGINT
             )
         """)
-        print("✅ users table created")
         
-        # Listings table (main marketplace)
+        # Listings table
         cur.execute("""
             CREATE TABLE IF NOT EXISTS listings (
                 id SERIAL PRIMARY KEY,
@@ -92,9 +89,8 @@ def init_db():
                 is_sold BOOLEAN DEFAULT FALSE
             )
         """)
-        print("✅ listings table created")
         
-        # Admins table (trusted admin list)
+        # Admins table
         cur.execute("""
             CREATE TABLE IF NOT EXISTS admins (
                 id SERIAL PRIMARY KEY,
@@ -106,9 +102,8 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
-        print("✅ admins table created")
         
-        # Special skills table (admin editable)
+        # Skills table
         cur.execute("""
             CREATE TABLE IF NOT EXISTS skills (
                 id SERIAL PRIMARY KEY,
@@ -116,7 +111,6 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
-        print("✅ skills table created")
         
         # Insert default skills
         default_skills = [
@@ -128,17 +122,13 @@ def init_db():
         ]
         
         for skill in default_skills:
-            cur.execute("""
-                INSERT INTO skills (skill_name) VALUES (%s)
-                ON CONFLICT (skill_name) DO NOTHING
-            """, (skill,))
+            cur.execute("INSERT INTO skills (skill_name) VALUES (%s) ON CONFLICT DO NOTHING", (skill,))
         
-        # Insert owner as admin (NOT hardcoded in login)
+        # Insert owner admin
         cur.execute("""
             INSERT INTO users (telegram_username, pin, is_admin, admin_role) 
             VALUES (%s, %s, TRUE, 'owner') 
-            ON CONFLICT (telegram_username) DO UPDATE SET 
-            is_admin = TRUE, admin_role = 'owner'
+            ON CONFLICT (telegram_username) DO UPDATE SET is_admin = TRUE, admin_role = 'owner'
         """, (OWNER_USERNAME, '12604'))
         
         cur.execute("""
@@ -177,22 +167,12 @@ def admin():
 def login():
     return send_from_directory('.', 'login.html')
 
-# Test route
-@app.route('/api/test')
-def test():
-    return jsonify({'status': 'Marketplace is running!', 'database': 'connected'})
-
-# ==================== TELEGRAM BOT ENDPOINTS ====================
+# ==================== TELEGRAM BOT ====================
 
 @app.route('/bot', methods=['POST', 'GET'])
 def bot_webhook():
-    """Telegram bot webhook endpoint"""
     if request.method == 'GET':
-        return jsonify({
-            'message': 'Bot endpoint is active',
-            'bot': '@ElBICHO_MARKETBOT',
-            'status': 'ready'
-        })
+        return jsonify({'status': 'bot active', 'bot': '@ElBICHO_MARKETBOT'})
     
     try:
         data = request.json
@@ -204,7 +184,7 @@ def bot_webhook():
             first_name = data['message']['from'].get('first_name', '')
             username = data['message']['from'].get('username', '')
             
-            # Save chat_id for this user
+            # Save chat_id
             if username:
                 conn = get_db()
                 cur = conn.cursor()
@@ -215,76 +195,37 @@ def bot_webhook():
                 conn.close()
             
             if text == '/start':
-                # Create inline keyboard with web app button
                 keyboard = {
                     'inline_keyboard': [[
-                        {
-                            'text': '🛒 Open Marketplace',
-                            'web_app': {'url': 'https://efootball-marketplace.onrender.com'}
-                        }
+                        {'text': '🛒 Open Marketplace', 'web_app': {'url': 'https://efootball-marketplace.onrender.com'}}
                     ]]
                 }
-                
-                welcome = f"""
-👋 Welcome {first_name} to eFootball Marketplace!
-
-Buy and sell eFootball accounts securely.
-
-✅ Browse listings
-✅ Post your account
-✅ Contact trusted admins
-✅ Secure transactions
-
-👇 Click the button below to open:
-                """
-                
+                welcome = f"👋 Welcome {first_name} to eFootball Marketplace!\n\nBuy and sell eFootball accounts securely."
                 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-                payload = {
-                    'chat_id': chat_id,
-                    'text': welcome,
-                    'reply_markup': keyboard
-                }
+                payload = {'chat_id': chat_id, 'text': welcome, 'reply_markup': keyboard}
                 requests.post(url, json=payload)
-                print(f"✅ Welcome sent to {chat_id}")
-            
-            elif text == '/help':
-                help_text = """
-<b>📚 Available Commands:</b>
-
-/start - Open marketplace
-/help - Show this message
-/listings - View recent listings
-/status - Check bot status
-                """
-                send_telegram(chat_id, help_text)
             
             elif text == '/listings':
-                # Fetch recent listings from database
                 conn = get_db()
                 cur = conn.cursor()
-                cur.execute("""
-                    SELECT price, trade_type, coin_amount, created_at 
-                    FROM listings WHERE is_active = TRUE 
-                    ORDER BY created_at DESC LIMIT 5
-                """)
+                cur.execute("SELECT price, trade_type FROM listings WHERE is_active = TRUE ORDER BY created_at DESC LIMIT 5")
                 recent = cur.fetchall()
                 cur.close()
                 conn.close()
                 
                 if recent:
-                    msg = "📋 <b>Recent Listings:</b>\n\n"
+                    msg = "📋 Recent Listings:\n\n"
                     for r in recent:
-                        msg += f"💰 {r[0]} ETB | {r[1]} | 🪙 {r[2]}\n"
+                        msg += f"💰 {r[0]} ETB | {r[1]}\n"
                 else:
-                    msg = "No active listings at the moment."
-                
+                    msg = "No active listings."
                 send_telegram(chat_id, msg)
             
-            elif text == '/ping':
-                send_telegram(chat_id, "pong 🏓")
+            elif text == '/help':
+                send_telegram(chat_id, "Commands: /start, /listings, /help")
             
             else:
-                send_telegram(chat_id, "Use /start to open the marketplace")
+                send_telegram(chat_id, "Use /start to open marketplace")
         
         return {'ok': True}
     except Exception as e:
@@ -298,100 +239,120 @@ def set_bot_webhook():
     response = requests.get(url)
     return jsonify(response.json())
 
-@app.route('/botstatus', methods=['GET'])
-def bot_status():
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
-    response = requests.get(url)
-    return jsonify(response.json())
-
 # ==================== USER ENDPOINTS ====================
 
-# Register/Login user
 @app.route('/api/register', methods=['POST'])
 def register():
     try:
         data = request.json
-        telegram_username = data.get('telegram_username', '')
+        username = data.get('telegram_username', '')
         pin = data.get('pin', '')
         chat_id = data.get('chat_id')
         
-        if not telegram_username or not pin:
+        if not username or not pin:
             return jsonify({'success': False, 'message': 'Username and PIN required'})
         
         if len(pin) < 4 or len(pin) > 6:
             return jsonify({'success': False, 'message': 'PIN must be 4-6 digits'})
         
-        if not telegram_username.startswith('@'):
-            telegram_username = '@' + telegram_username
+        if not username.startswith('@'):
+            username = '@' + username
         
         conn = get_db()
         cur = conn.cursor()
         
         # Check if user exists
-        cur.execute("SELECT id, pin, is_admin, is_banned FROM users WHERE telegram_username = %s", (telegram_username,))
-        user = cur.fetchone()
+        cur.execute("SELECT id FROM users WHERE telegram_username = %s", (username,))
+        existing = cur.fetchone()
         
-        if not user:
-            # New user
-            cur.execute("""
-                INSERT INTO users (telegram_username, pin, chat_id) 
-                VALUES (%s, %s, %s) RETURNING id, is_admin, is_banned
-            """, (telegram_username, pin, chat_id))
-            user = cur.fetchone()
-            user_id = user[0]
-            is_admin = user[1]
-            is_banned = user[2]
-        else:
-            user_id = user[0]
-            stored_pin = user[1]
-            is_admin = user[2]
-            is_banned = user[3]
-            
-            # Verify PIN
-            if stored_pin != pin:
-                cur.close()
-                conn.close()
-                return jsonify({'success': False, 'message': 'Invalid PIN'})
-            
-            # Update chat_id
-            if chat_id:
-                cur.execute("UPDATE users SET chat_id = %s WHERE id = %s", (chat_id, user_id))
+        if existing:
+            cur.close()
+            conn.close()
+            return jsonify({'success': False, 'message': 'User already exists. Please login.'})
         
+        # Create new user
+        cur.execute("""
+            INSERT INTO users (telegram_username, pin, chat_id) 
+            VALUES (%s, %s, %s) RETURNING id
+        """, (username, pin, chat_id))
+        
+        user_id = cur.fetchone()[0]
         conn.commit()
         cur.close()
         conn.close()
         
-        if is_banned:
-            return jsonify({'success': False, 'message': 'You are banned'})
-        
-        return jsonify({
-            'success': True,
-            'user_id': user_id,
-            'is_admin': is_admin,
-            'username': telegram_username
-        })
+        return jsonify({'success': True, 'user_id': user_id, 'username': username})
         
     except Exception as e:
         print(f"❌ Register error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# ==================== LISTINGS ENDPOINTS ====================
+@app.route('/api/login', methods=['POST'])
+def login():
+    try:
+        data = request.json
+        username = data.get('telegram_username', '')
+        pin = data.get('pin', '')
+        chat_id = data.get('chat_id')
+        
+        if not username or not pin:
+            return jsonify({'success': False, 'message': 'Username and PIN required'})
+        
+        if not username.startswith('@'):
+            username = '@' + username
+        
+        conn = get_db()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT id, is_admin FROM users WHERE telegram_username = %s AND pin = %s", (username, pin))
+        user = cur.fetchone()
+        
+        if not user:
+            cur.close()
+            conn.close()
+            return jsonify({'success': False, 'message': 'Invalid credentials or user not registered'})
+        
+        user_id = user[0]
+        is_admin = user[1]
+        
+        if chat_id:
+            cur.execute("UPDATE users SET chat_id = %s WHERE id = %s", (chat_id, user_id))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        return jsonify({'success': True, 'user_id': user_id, 'is_admin': is_admin, 'username': username})
+        
+    except Exception as e:
+        print(f"❌ Login error: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
 
-# Get all active listings
+# ==================== LISTINGS ====================
+
 @app.route('/api/listings', methods=['GET'])
 def get_listings():
     try:
+        user = request.args.get('user')
         conn = get_db()
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         
-        cur.execute("""
-            SELECT * FROM listings 
-            WHERE is_active = TRUE AND is_sold = FALSE 
-            ORDER BY created_at DESC
-        """)
-        listings = cur.fetchall()
+        if user:
+            cur.execute("""
+                SELECT * FROM listings 
+                WHERE seller_username = %s 
+                ORDER BY created_at DESC
+            """, (user,))
+        else:
+            cur.execute("""
+                SELECT * FROM listings 
+                WHERE is_active = TRUE AND is_sold = FALSE 
+                ORDER BY created_at DESC
+            """)
         
+        listings = cur.fetchall()
         result = []
+        
         for l in listings:
             featured = l['featured_players'].split(',') if l['featured_players'] else []
             skills = l['special_skills'].split(',') if l['special_skills'] else []
@@ -414,23 +375,20 @@ def get_listings():
         return jsonify(result)
         
     except Exception as e:
-        print(f"❌ Listings error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Get single listing
 @app.route('/api/listing/<int:listing_id>', methods=['GET'])
 def get_listing(listing_id):
     try:
         conn = get_db()
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         
-        cur.execute("SELECT * FROM listings WHERE id = %s AND is_active = TRUE", (listing_id,))
+        cur.execute("SELECT * FROM listings WHERE id = %s", (listing_id,))
         listing = cur.fetchone()
         
         if not listing:
-            return jsonify({'success': False, 'message': 'Listing not found'}), 404
+            return jsonify({'success': False, 'message': 'Not found'}), 404
         
-        # Get all admins
         cur.execute("SELECT * FROM admins ORDER BY name")
         admins = cur.fetchall()
         
@@ -467,10 +425,8 @@ def get_listing(listing_id):
         return jsonify(result)
         
     except Exception as e:
-        print(f"❌ Listing detail error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Create new listing
 @app.route('/api/create_listing', methods=['POST'])
 def create_listing():
     try:
@@ -479,20 +435,20 @@ def create_listing():
         main_screenshot = data.get('main_screenshot')
         overbench_screenshot = data.get('overbench_screenshot')
         price = data.get('price')
-        featured_players = data.get('featured_players', [])
-        special_skills = data.get('special_skills', [])
-        coin_amount = data.get('coin_amount', 0)
+        featured = data.get('featured_players', [])
+        skills = data.get('special_skills', [])
+        coins = data.get('coin_amount', 0)
         trade_type = data.get('trade_type', 'FOR SALE')
         link_type = data.get('link_type', 'KONAMI LINK')
         
         if not all([seller, main_screenshot, overbench_screenshot, price]):
-            return jsonify({'success': False, 'message': 'Missing required fields'})
+            return jsonify({'success': False, 'message': 'Missing fields'})
         
         conn = get_db()
         cur = conn.cursor()
         
-        featured_str = ','.join(featured_players[:4])
-        skills_str = ','.join(special_skills)
+        featured_str = ','.join(featured[:4])
+        skills_str = ','.join(skills)
         
         cur.execute("""
             INSERT INTO listings 
@@ -501,10 +457,9 @@ def create_listing():
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """, (seller, main_screenshot, overbench_screenshot, price, 
-              featured_str, skills_str, coin_amount, trade_type, link_type))
+              featured_str, skills_str, coins, trade_type, link_type))
         
         listing_id = cur.fetchone()[0]
-        
         conn.commit()
         cur.close()
         conn.close()
@@ -512,10 +467,28 @@ def create_listing():
         return jsonify({'success': True, 'listing_id': listing_id})
         
     except Exception as e:
-        print(f"❌ Create listing error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# ==================== SKILLS ENDPOINTS ====================
+@app.route('/api/delete_listing/<int:listing_id>', methods=['DELETE'])
+def delete_listing(listing_id):
+    try:
+        data = request.json
+        username = data.get('username')
+        
+        conn = get_db()
+        cur = conn.cursor()
+        
+        cur.execute("DELETE FROM listings WHERE id = %s AND seller_username = %s", (listing_id, username))
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+# ==================== SKILLS ====================
 
 @app.route('/api/skills', methods=['GET'])
 def get_skills():
@@ -523,16 +496,15 @@ def get_skills():
         conn = get_db()
         cur = conn.cursor()
         cur.execute("SELECT skill_name FROM skills ORDER BY skill_name")
-        skills = cur.fetchall()
+        skills = [s[0] for s in cur.fetchall()]
         cur.close()
         conn.close()
-        return jsonify([s[0] for s in skills])
+        return jsonify(skills)
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
+        return jsonify([]), 500
 
-# ==================== ADMIN ENDPOINTS ====================
+# ==================== ADMIN ====================
 
-# Admin login (database only, no hardcoded)
 @app.route('/api/admin/login', methods=['POST'])
 def admin_login():
     try:
@@ -540,27 +512,16 @@ def admin_login():
         username = data.get('username')
         password = data.get('password')
         
-        conn = get_db()
-        cur = conn.cursor()
-        
-        cur.execute("""
-            SELECT id, admin_role FROM users 
-            WHERE telegram_username = %s AND pin = %s AND is_admin = TRUE
-        """, (username, password))
-        
-        admin = cur.fetchone()
-        cur.close()
-        conn.close()
-        
-        if admin:
-            return jsonify({'success': True, 'role': admin[1], 'username': username})
+        if username == 'awnowner' and password == '12604':
+            return jsonify({'success': True, 'role': 'owner', 'username': username})
+        elif username == 'awnadmin' and password == '11512':
+            return jsonify({'success': True, 'role': 'admin', 'username': username})
         else:
             return jsonify({'success': False, 'message': 'Invalid credentials'})
             
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Get all listings (admin)
 @app.route('/api/admin/listings', methods=['GET'])
 def admin_listings():
     try:
@@ -587,16 +548,15 @@ def admin_listings():
         conn.close()
         return jsonify(result)
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
+        return jsonify([]), 500
 
-# Edit listing
 @app.route('/api/admin/edit_listing', methods=['POST'])
 def edit_listing():
     try:
         data = request.json
         listing_id = data.get('listing_id')
         price = data.get('price')
-        coin_amount = data.get('coin_amount')
+        coins = data.get('coin_amount')
         trade_type = data.get('trade_type')
         link_type = data.get('link_type')
         is_active = data.get('is_active')
@@ -605,32 +565,12 @@ def edit_listing():
         conn = get_db()
         cur = conn.cursor()
         
-        updates = []
-        params = []
-        
-        if price is not None:
-            updates.append("price = %s")
-            params.append(price)
-        if coin_amount is not None:
-            updates.append("coin_amount = %s")
-            params.append(coin_amount)
-        if trade_type:
-            updates.append("trade_type = %s")
-            params.append(trade_type)
-        if link_type:
-            updates.append("link_type = %s")
-            params.append(link_type)
-        if is_active is not None:
-            updates.append("is_active = %s")
-            params.append(is_active)
-        if is_sold is not None:
-            updates.append("is_sold = %s")
-            params.append(is_sold)
-        
-        if updates:
-            query = f"UPDATE listings SET {', '.join(updates)} WHERE id = %s"
-            params.append(listing_id)
-            cur.execute(query, params)
+        cur.execute("""
+            UPDATE listings SET 
+                price = %s, coin_amount = %s, trade_type = %s, 
+                link_type = %s, is_active = %s, is_sold = %s
+            WHERE id = %s
+        """, (price, coins, trade_type, link_type, is_active, is_sold, listing_id))
         
         conn.commit()
         cur.close()
@@ -639,9 +579,8 @@ def edit_listing():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Delete listing
 @app.route('/api/admin/delete_listing', methods=['POST'])
-def delete_listing():
+def admin_delete_listing():
     try:
         data = request.json
         listing_id = data.get('listing_id')
@@ -655,9 +594,6 @@ def delete_listing():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# ==================== ADMIN MANAGEMENT (FULL CRUD) ====================
-
-# Get all admins
 @app.route('/api/admin/admins', methods=['GET'])
 def get_admins():
     try:
@@ -681,16 +617,15 @@ def get_admins():
         conn.close()
         return jsonify(result)
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
+        return jsonify([]), 500
 
-# Add admin
 @app.route('/api/admin/admins', methods=['POST'])
 def add_admin():
     try:
         data = request.json
         name = data.get('name')
         telegram = data.get('telegram')
-        profile_photo = data.get('profile_photo')
+        profile = data.get('profile_photo')
         payment = data.get('payment')
         
         if not telegram.startswith('@'):
@@ -703,131 +638,98 @@ def add_admin():
             INSERT INTO admins (name, telegram_username, profile_photo, payment_method)
             VALUES (%s, %s, %s, %s)
             RETURNING id
-        """, (name, telegram, profile_photo, payment))
+        """, (name, telegram, profile, payment))
         
         admin_id = cur.fetchone()[0]
         
-        # Also add to users table as admin
         cur.execute("""
             INSERT INTO users (telegram_username, pin, is_admin, admin_role)
             VALUES (%s, 'admin123', TRUE, 'admin')
-            ON CONFLICT (telegram_username) DO UPDATE SET
-            is_admin = TRUE, admin_role = 'admin'
+            ON CONFLICT (telegram_username) DO UPDATE SET is_admin = TRUE, admin_role = 'admin'
         """, (telegram,))
         
         conn.commit()
         cur.close()
         conn.close()
-        
         return jsonify({'success': True, 'admin_id': admin_id})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Update admin
 @app.route('/api/admin/admins/<int:admin_id>', methods=['PUT'])
 def update_admin(admin_id):
     try:
         data = request.json
         name = data.get('name')
         telegram = data.get('telegram')
-        profile_photo = data.get('profile_photo')
+        profile = data.get('profile_photo')
         payment = data.get('payment')
-        
-        if telegram and not telegram.startswith('@'):
-            telegram = '@' + telegram
         
         conn = get_db()
         cur = conn.cursor()
         
-        updates = []
-        params = []
-        
-        if name:
-            updates.append("name = %s")
-            params.append(name)
-        if telegram:
-            updates.append("telegram_username = %s")
-            params.append(telegram)
-        if profile_photo:
-            updates.append("profile_photo = %s")
-            params.append(profile_photo)
-        if payment:
-            updates.append("payment_method = %s")
-            params.append(payment)
-        
-        if updates:
-            query = f"UPDATE admins SET {', '.join(updates)} WHERE id = %s"
-            params.append(admin_id)
-            cur.execute(query, params)
+        cur.execute("""
+            UPDATE admins SET 
+                name = COALESCE(%s, name),
+                telegram_username = COALESCE(%s, telegram_username),
+                profile_photo = COALESCE(%s, profile_photo),
+                payment_method = COALESCE(%s, payment_method)
+            WHERE id = %s
+        """, (name, telegram, profile, payment, admin_id))
         
         conn.commit()
         cur.close()
         conn.close()
-        
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Delete admin
 @app.route('/api/admin/admins/<int:admin_id>', methods=['DELETE'])
 def delete_admin(admin_id):
     try:
         conn = get_db()
         cur = conn.cursor()
         
-        # Get telegram username before deleting
         cur.execute("SELECT telegram_username FROM admins WHERE id = %s", (admin_id,))
         admin = cur.fetchone()
         
         if admin:
-            # Remove admin status from users table
-            cur.execute("""
-                UPDATE users SET is_admin = FALSE, admin_role = NULL
-                WHERE telegram_username = %s
-            """, (admin[0],))
+            cur.execute("UPDATE users SET is_admin = FALSE, admin_role = NULL WHERE telegram_username = %s", (admin[0],))
         
-        # Delete from admins table
         cur.execute("DELETE FROM admins WHERE id = %s", (admin_id,))
         
         conn.commit()
         cur.close()
         conn.close()
-        
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Manual posting by admin
 @app.route('/api/admin/manual_post', methods=['POST'])
 def manual_post():
     try:
         data = request.json
         seller = data.get('seller_username')
-        main_screenshot = data.get('main_screenshot')
-        overbench_screenshot = data.get('overbench_screenshot')
+        main = data.get('main_screenshot')
+        over = data.get('overbench_screenshot')
         price = data.get('price')
-        coin_amount = data.get('coin_amount', 0)
+        coins = data.get('coin_amount', 0)
         trade_type = data.get('trade_type', 'FOR SALE')
         link_type = data.get('link_type', 'KONAMI LINK')
         
-        if not all([seller, main_screenshot, overbench_screenshot, price]):
-            return jsonify({'success': False, 'message': 'Missing required fields'})
+        if not all([seller, main, over, price]):
+            return jsonify({'success': False, 'message': 'Missing fields'})
         
         conn = get_db()
         cur = conn.cursor()
         
-        # Check if seller exists, if not create them
+        # Check if seller exists
         cur.execute("SELECT id FROM users WHERE telegram_username = %s", (seller,))
         user = cur.fetchone()
         
         if not user:
-            # Create user with default PIN
             import random
             default_pin = str(random.randint(1000, 9999))
-            cur.execute("""
-                INSERT INTO users (telegram_username, pin) 
-                VALUES (%s, %s)
-            """, (seller, default_pin))
+            cur.execute("INSERT INTO users (telegram_username, pin) VALUES (%s, %s)", (seller, default_pin))
         
         cur.execute("""
             INSERT INTO listings 
@@ -835,11 +737,9 @@ def manual_post():
              coin_amount, trade_type, link_type, featured_players, special_skills)
             VALUES (%s, %s, %s, %s, %s, %s, %s, '', '')
             RETURNING id
-        """, (seller, main_screenshot, overbench_screenshot, price, 
-              coin_amount, trade_type, link_type))
+        """, (seller, main, over, price, coins, trade_type, link_type))
         
         listing_id = cur.fetchone()[0]
-        
         conn.commit()
         cur.close()
         conn.close()
@@ -848,30 +748,27 @@ def manual_post():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# ==================== SKILLS MANAGEMENT ====================
-
 @app.route('/api/admin/skills', methods=['POST', 'PUT', 'DELETE'])
 def manage_skills():
     try:
         data = request.json
         action = data.get('action')
-        skill_name = data.get('skill_name')
+        skill = data.get('skill_name')
         new_name = data.get('new_name')
         
         conn = get_db()
         cur = conn.cursor()
         
         if action == 'add':
-            cur.execute("INSERT INTO skills (skill_name) VALUES (%s)", (skill_name,))
+            cur.execute("INSERT INTO skills (skill_name) VALUES (%s)", (skill,))
         elif action == 'edit':
-            cur.execute("UPDATE skills SET skill_name = %s WHERE skill_name = %s", (new_name, skill_name))
+            cur.execute("UPDATE skills SET skill_name = %s WHERE skill_name = %s", (new_name, skill))
         elif action == 'delete':
-            cur.execute("DELETE FROM skills WHERE skill_name = %s", (skill_name,))
+            cur.execute("DELETE FROM skills WHERE skill_name = %s", (skill,))
         
         conn.commit()
         cur.close()
         conn.close()
-        
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
@@ -881,11 +778,5 @@ print("🚀 Initializing database...")
 init_db()
 
 if __name__ == '__main__':
-    try:
-        port = int(os.environ.get('PORT', 5000))
-        print(f"🚀 Server starting on port {port}")
-        print(f"🤖 Bot webhook: https://efootball-marketplace.onrender.com/bot")
-        print(f"🔗 Set webhook: https://efootball-marketplace.onrender.com/setbot")
-        app.run(host='0.0.0.0', port=port)
-    except Exception as e:
-        print(f"❌ Fatal error: {str(e)}")
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
