@@ -163,8 +163,9 @@ def post():
 def admin():
     return send_from_directory('.', 'admin.html')
 
+# THIS SERVES THE LOGIN HTML PAGE
 @app.route('/login')
-def login():
+def login_page():
     return send_from_directory('.', 'login.html')
 
 # ==================== TELEGRAM BOT ====================
@@ -503,10 +504,11 @@ def get_skills():
     except Exception as e:
         return jsonify([]), 500
 
-# ==================== ADMIN ====================
+# ==================== ADMIN ENDPOINTS ====================
 
+# THIS IS THE FIXED ADMIN API LOGIN - renamed to admin_api_login
 @app.route('/api/admin/login', methods=['POST'])
-def admin_login():
+def admin_api_login():  # Renamed from admin_login to avoid conflict
     try:
         data = request.json
         username = data.get('username')
@@ -779,4 +781,7 @@ init_db()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    print(f"🚀 Server starting on port {port}")
+    print(f"🤖 Bot webhook: https://efootball-marketplace.onrender.com/bot")
+    print(f"🔗 Set webhook: https://efootball-marketplace.onrender.com/setbot")
     app.run(host='0.0.0.0', port=port)
