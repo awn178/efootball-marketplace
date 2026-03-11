@@ -11,191 +11,365 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-            color: #f3f4f6;
+            background: #f0f2f5;
+            color: #1e293b;
             min-height: 100vh;
         }
-        header {
-            background: #1f2937;
-            padding: 16px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 700;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid #374151;
-        }
-        .container {
-            padding: 16px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* Admin Header */
-        .admin-header {
-            background: #1f2937;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            border: 1px solid #374151;
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
             gap: 15px;
         }
+
         .role-badge {
-            padding: 6px 15px;
-            border-radius: 30px;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 13px;
+            font-weight: 600;
         }
+
         .role-badge.owner {
             background: #10b981;
             color: white;
         }
+
         .role-badge.admin {
             background: #2563eb;
             color: white;
         }
+
         .logout-btn {
             background: #ef4444;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
-        
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
+
         .stat-card {
-            background: #1f2937;
-            padding: 16px;
+            background: white;
+            padding: 20px;
             border-radius: 12px;
-            text-align: center;
-            border: 1px solid #374151;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.2);
+        }
+
         .stat-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            color: #10b981;
+            color: #2563eb;
         }
+
         .stat-label {
-            color: #9ca3af;
-            font-size: 11px;
-            margin-top: 5px;
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 8px;
         }
-        
+
         /* Tabs */
         .tabs {
             display: flex;
-            gap: 6px;
+            gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            background: #1f2937;
-            padding: 8px;
-            border-radius: 30px;
-            border: 1px solid #374151;
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+
         .tab {
-            padding: 10px 16px;
-            border-radius: 25px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
-            background: #374151;
-            color: #9ca3af;
             font-weight: 600;
-            font-size: 13px;
+            transition: all 0.3s ease;
+            background: #f1f5f9;
+            color: #64748b;
         }
+
+        .tab:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
         .tab.active {
             background: #2563eb;
             color: white;
         }
+
         .section {
             display: none;
         }
+
         .section.active {
             display: block;
         }
-        
+
         /* Cards */
         .card {
-            background: #1f2937;
-            border-radius: 16px;
-            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
             margin-bottom: 20px;
-            border: 1px solid #374151;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+
         .card h2 {
-            color: #2563eb;
+            color: #1e293b;
             margin-bottom: 20px;
             font-size: 18px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
+
         /* Tables */
         .table-container {
             overflow-x: auto;
-            border-radius: 12px;
-            background: #374151;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             min-width: 800px;
         }
+
         th {
-            background: #2563eb;
-            color: white;
-            padding: 12px;
-            font-size: 12px;
+            background: #f8fafc;
+            padding: 16px;
             text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 1px solid #e2e8f0;
         }
+
         td {
-            padding: 12px;
-            border-bottom: 1px solid #4b5563;
-            font-size: 13px;
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
         }
-        
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
         /* Buttons */
         .btn {
-            padding: 8px 12px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 13px;
+            transition: all 0.3s ease;
             margin: 2px;
         }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
         .btn-green {
             background: #10b981;
             color: white;
         }
+
         .btn-blue {
             background: #2563eb;
             color: white;
         }
+
         .btn-red {
             background: #ef4444;
             color: white;
         }
+
         .btn-yellow {
             background: #f59e0b;
             color: white;
         }
-        
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        /* Admins Grid */
+        .admins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .admin-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.2);
+        }
+
+        .admin-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #2563eb;
+        }
+
+        .admin-photo-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .admin-info {
+            flex: 1;
+        }
+
+        .admin-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .admin-telegram {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .admin-payment {
+            font-size: 11px;
+            color: #10b981;
+            margin-top: 4px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .skill-item {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -204,40 +378,49 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0,0,0,0.5);
             z-index: 1000;
             padding: 20px;
             overflow-y: auto;
         }
+
         .modal.show {
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .modal-content {
-            background: #1f2937;
+            background: white;
+            border-radius: 16px;
             padding: 30px;
-            border-radius: 20px;
             width: 100%;
             max-width: 500px;
-            border: 1px solid #374151;
+            animation: slideIn 0.3s ease;
         }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .modal-content h3 {
-            color: #2563eb;
+            color: #1e293b;
             margin-bottom: 20px;
         }
-        .modal-input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: #374151;
-            border: 1px solid #4b5563;
-            color: white;
-            border-radius: 8px;
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
-        .modal-input[type="file"] {
-            padding: 10px;
-        }
+
         .photo-preview {
             width: 80px;
             height: 80px;
@@ -247,101 +430,40 @@
             display: block;
             border: 2px solid #2563eb;
         }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        /* Admins Grid */
-        .admins-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .admin-card {
-            background: #374151;
-            padding: 16px;
-            border-radius: 12px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            border: 1px solid #4b5563;
-        }
-        .admin-photo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #2563eb;
-        }
-        .admin-photo-placeholder {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #2563eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 700;
-            color: white;
-        }
-        .admin-info {
-            flex: 1;
-        }
-        .admin-name {
-            font-weight: 600;
-            color: #2563eb;
-        }
-        .admin-telegram {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-        .admin-payment {
-            font-size: 11px;
-            color: #10b981;
-            margin-top: 4px;
-        }
-        .admin-actions {
-            display: flex;
-            gap: 5px;
-        }
-        
+
         .loading {
             text-align: center;
-            color: #9ca3af;
-            padding: 20px;
+            color: #64748b;
+            padding: 40px;
         }
     </style>
 </head>
 <body>
-    <header>
-        👑 ADMIN DASHBOARD - eFOOTBALL MARKETPLACE
-    </header>
+    <!-- Login Prompt -->
+    <div id="loginPrompt" style="display: none;">
+        <div class="header">
+            <div class="logo">👑 Admin Login Required</div>
+        </div>
+        <div class="container" style="text-align: center; padding: 50px;">
+            <p>Please <a href="/login" style="color: #2563eb;">login</a> to access admin panel.</p>
+        </div>
+    </div>
 
-    <div class="container">
-        <!-- Admin Header -->
-        <div class="admin-header" id="adminHeader" style="display: none;">
-            <div>
-                <h1 style="color: #2563eb;">Welcome, <span id="adminName"></span></h1>
-                <p style="color: #9ca3af;">Role: <span id="adminRole"></span></p>
+    <!-- Admin Dashboard -->
+    <div id="dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                👑 eFootball Marketplace Admin
             </div>
-            <div>
+            <div class="user-info">
                 <span id="roleBadge" class="role-badge"></span>
+                <span style="font-weight: 600;" id="adminName"></span>
                 <button class="logout-btn" onclick="logout()">LOGOUT</button>
             </div>
-        </div>
+        </header>
 
-        <!-- Login Prompt -->
-        <div id="loginPrompt" class="card" style="text-align: center; padding: 40px;">
-            <h2 style="color: #2563eb;">🔐 ADMIN LOGIN REQUIRED</h2>
-            <p style="margin: 20px 0; color: #9ca3af;">Please <a href="/login" style="color: #10b981;">click here</a> to login.</p>
-        </div>
-
-        <!-- Dashboard Content -->
-        <div id="dashboardContent" style="display: none;">
+        <div class="container">
             <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -370,10 +492,10 @@
                 <div class="tab" onclick="switchTab('post')">📝 MANUAL POST</div>
             </div>
 
-            <!-- LISTINGS TAB -->
+            <!-- Listings Tab -->
             <div id="listings-section" class="section active">
                 <div class="card">
-                    <h2>📋 ALL LISTINGS</h2>
+                    <h2>📋 All Listings</h2>
                     <div class="table-container">
                         <table>
                             <thead>
@@ -396,67 +518,66 @@
                 </div>
             </div>
 
-            <!-- ADMINS TAB (Full CRUD) -->
+            <!-- Admins Tab (Fully Functional) -->
             <div id="admins-section" class="section">
                 <div class="card">
-                    <h2>👥 TRUSTED ADMINS</h2>
+                    <h2>👥 Trusted Admins</h2>
                     <button class="btn btn-green" onclick="showAddAdminModal()" style="margin-bottom: 20px;">➕ ADD ADMIN</button>
-                    
-                    <div id="adminsList" class="admins-grid">
-                        <div class="loading">Loading admins...</div>
-                    </div>
+                    <div id="adminsList" class="admins-grid"></div>
                 </div>
             </div>
 
-            <!-- SKILLS TAB -->
+            <!-- Skills Tab -->
             <div id="skills-section" class="section">
                 <div class="card">
-                    <h2>✨ MANAGE SKILLS</h2>
+                    <h2>✨ Manage Skills</h2>
                     <button class="btn btn-green" onclick="showAddSkillModal()" style="margin-bottom: 20px;">➕ ADD SKILL</button>
                     <div id="skillsList" class="skills-grid"></div>
                 </div>
             </div>
 
-            <!-- MANUAL POST TAB -->
+            <!-- Manual Post Tab (Fully Functional) -->
             <div id="post-section" class="section">
                 <div class="card">
-                    <h2>📝 MANUAL POST</h2>
-                    <div style="margin-bottom: 15px;">
-                        <label style="color: #10b981;">Seller Username</label>
-                        <input type="text" id="manualSeller" class="modal-input" placeholder="@username">
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="color: #10b981;">Main Squad</label>
-                        <input type="file" id="manualMainSquad" accept="image/*" class="modal-input">
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="color: #10b981;">Overbench</label>
-                        <input type="file" id="manualOverbench" accept="image/*" class="modal-input">
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="color: #10b981;">Price (ETB)</label>
-                        <input type="number" id="manualPrice" class="modal-input">
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="color: #10b981;">Coins</label>
-                        <input type="number" id="manualCoins" class="modal-input" value="0">
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="color: #10b981;">Trade Type</label>
-                        <select id="manualTradeType" class="modal-input">
-                            <option value="FOR SALE">FOR SALE</option>
-                            <option value="FOR EXCHANGE">FOR EXCHANGE</option>
-                            <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
-                        </select>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="color: #10b981;">Link Type</label>
-                        <select id="manualLinkType" class="modal-input">
-                            <option value="KONAMI LINK">KONAMI LINK</option>
-                            <option value="GOOGLE LINK">GOOGLE LINK</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-green" onclick="manualPost()" style="width: 100%; padding: 15px;">✅ POST LISTING</button>
+                    <h2>📝 Manual Post</h2>
+                    <form id="manualPostForm">
+                        <div class="form-group">
+                            <label>Seller Username</label>
+                            <input type="text" id="manualSeller" class="form-control" placeholder="@username" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Main Squad Screenshot</label>
+                            <input type="file" id="manualMain" accept="image/*" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Overbench Screenshot</label>
+                            <input type="file" id="manualOver" accept="image/*" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Price (ETB)</label>
+                            <input type="number" id="manualPrice" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Coins</label>
+                            <input type="number" id="manualCoins" class="form-control" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Trade Type</label>
+                            <select id="manualTradeType" class="form-control">
+                                <option value="FOR SALE">FOR SALE</option>
+                                <option value="FOR EXCHANGE">FOR EXCHANGE</option>
+                                <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Link Type</label>
+                            <select id="manualLinkType" class="form-control">
+                                <option value="KONAMI LINK">KONAMI LINK</option>
+                                <option value="GOOGLE LINK">GOOGLE LINK</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-green" onclick="manualPost()" style="width: 100%; padding: 14px;">✅ POST LISTING</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -465,21 +586,29 @@
     <!-- Add/Edit Admin Modal -->
     <div class="modal" id="adminModal">
         <div class="modal-content">
-            <h3 id="adminModalTitle">➕ ADD ADMIN</h3>
+            <h3 id="adminModalTitle">➕ Add Admin</h3>
             <input type="hidden" id="adminId">
             
-            <label>Full Name</label>
-            <input type="text" id="adminName" class="modal-input" placeholder="e.g., John Doe">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="adminName" class="form-control" placeholder="John Doe">
+            </div>
             
-            <label>Telegram Username</label>
-            <input type="text" id="adminTelegram" class="modal-input" placeholder="@username">
+            <div class="form-group">
+                <label>Telegram Username</label>
+                <input type="text" id="adminTelegram" class="form-control" placeholder="@username">
+            </div>
             
-            <label>Profile Photo</label>
-            <input type="file" id="adminPhoto" accept="image/*" class="modal-input" onchange="previewAdminPhoto()">
-            <img id="adminPhotoPreview" class="photo-preview" style="display: none;">
+            <div class="form-group">
+                <label>Profile Photo</label>
+                <input type="file" id="adminPhoto" accept="image/*" class="form-control" onchange="previewAdminPhoto()">
+                <img id="adminPhotoPreview" class="photo-preview" style="display: none;">
+            </div>
             
-            <label>Payment Method</label>
-            <input type="text" id="adminPayment" class="modal-input" placeholder="e.g., TeleBirr, Bank Transfer">
+            <div class="form-group">
+                <label>Payment Method</label>
+                <input type="text" id="adminPayment" class="form-control" placeholder="e.g., TeleBirr, Bank Transfer">
+            </div>
             
             <div class="modal-buttons">
                 <button class="btn btn-green" onclick="saveAdmin()">SAVE</button>
@@ -491,38 +620,48 @@
     <!-- Edit Listing Modal -->
     <div class="modal" id="editListingModal">
         <div class="modal-content">
-            <h3>✏️ EDIT LISTING</h3>
+            <h3>✏️ Edit Listing</h3>
             <input type="hidden" id="editListingId">
             
-            <label>Price (ETB)</label>
-            <input type="number" id="editPrice" class="modal-input">
+            <div class="form-group">
+                <label>Price (ETB)</label>
+                <input type="number" id="editPrice" class="form-control">
+            </div>
             
-            <label>Coins</label>
-            <input type="number" id="editCoins" class="modal-input">
+            <div class="form-group">
+                <label>Coins</label>
+                <input type="number" id="editCoins" class="form-control">
+            </div>
             
-            <label>Trade Type</label>
-            <select id="editTradeType" class="modal-input">
-                <option value="FOR SALE">FOR SALE</option>
-                <option value="FOR EXCHANGE">FOR EXCHANGE</option>
-                <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
-            </select>
+            <div class="form-group">
+                <label>Trade Type</label>
+                <select id="editTradeType" class="form-control">
+                    <option value="FOR SALE">FOR SALE</option>
+                    <option value="FOR EXCHANGE">FOR EXCHANGE</option>
+                    <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
+                </select>
+            </div>
             
-            <label>Link Type</label>
-            <select id="editLinkType" class="modal-input">
-                <option value="KONAMI LINK">KONAMI LINK</option>
-                <option value="GOOGLE LINK">GOOGLE LINK</option>
-            </select>
+            <div class="form-group">
+                <label>Link Type</label>
+                <select id="editLinkType" class="form-control">
+                    <option value="KONAMI LINK">KONAMI LINK</option>
+                    <option value="GOOGLE LINK">GOOGLE LINK</option>
+                </select>
+            </div>
             
-            <label>Status</label>
-            <select id="editStatus" class="modal-input">
-                <option value="active">Active</option>
-                <option value="sold">Sold</option>
-                <option value="inactive">Inactive</option>
-            </select>
+            <div class="form-group">
+                <label>Status</label>
+                <select id="editStatus" class="form-control">
+                    <option value="active">Active</option>
+                    <option value="sold">Sold</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
             
             <div class="modal-buttons">
                 <button class="btn btn-green" onclick="saveListingEdit()">SAVE</button>
-                <button class="btn btn-red" onclick="closeListingModal()">CANCEL</button>
+                <button class="btn btn-red" onclick="closeEditModal()">CANCEL</button>
             </div>
         </div>
     </div>
@@ -530,8 +669,11 @@
     <!-- Add Skill Modal -->
     <div class="modal" id="addSkillModal">
         <div class="modal-content">
-            <h3>➕ ADD SKILL</h3>
-            <input type="text" id="newSkill" class="modal-input" placeholder="Skill name">
+            <h3>➕ Add Skill</h3>
+            <div class="form-group">
+                <label>Skill Name</label>
+                <input type="text" id="newSkill" class="form-control" placeholder="e.g., Blitz Curler">
+            </div>
             <div class="modal-buttons">
                 <button class="btn btn-green" onclick="addSkill()">ADD</button>
                 <button class="btn btn-red" onclick="closeSkillModal()">CANCEL</button>
@@ -543,35 +685,33 @@
         let adminRole = '';
         let adminUser = '';
 
-        // Check auth
+        // Check login
         function checkAuth() {
             adminUser = localStorage.getItem('adminUser');
             adminRole = localStorage.getItem('adminRole');
-            
+
             if (adminUser && adminRole) {
                 document.getElementById('loginPrompt').style.display = 'none';
-                document.getElementById('adminHeader').style.display = 'flex';
-                document.getElementById('dashboardContent').style.display = 'block';
-                
+                document.getElementById('dashboard').style.display = 'block';
                 document.getElementById('adminName').textContent = adminUser;
-                document.getElementById('adminRole').textContent = adminRole;
                 
                 const badge = document.getElementById('roleBadge');
                 badge.textContent = adminRole === 'owner' ? 'OWNER' : 'ADMIN';
                 badge.className = adminRole === 'owner' ? 'role-badge owner' : 'role-badge admin';
                 
                 loadAllData();
+            } else {
+                document.getElementById('loginPrompt').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'none';
             }
         }
 
-        // Logout
         function logout() {
             localStorage.removeItem('adminUser');
             localStorage.removeItem('adminRole');
             window.location.href = '/login';
         }
 
-        // Switch tabs
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -579,7 +719,6 @@
             document.getElementById(tab + '-section').classList.add('active');
         }
 
-        // Load all data
         async function loadAllData() {
             loadListings();
             loadAdmins();
@@ -591,16 +730,16 @@
             try {
                 const res = await fetch('/api/admin/listings');
                 const listings = await res.json();
-                
+
                 document.getElementById('totalListings').textContent = listings.length;
                 document.getElementById('activeListings').textContent = listings.filter(l => l.is_active && !l.is_sold).length;
                 document.getElementById('soldListings').textContent = listings.filter(l => l.is_sold).length;
-                
+
                 let html = '';
                 listings.forEach(l => {
                     let status = l.is_sold ? 'SOLD' : (l.is_active ? 'ACTIVE' : 'INACTIVE');
                     let statusColor = l.is_sold ? '#ef4444' : (l.is_active ? '#10b981' : '#f59e0b');
-                    
+
                     html += `
                         <tr>
                             <td>#${l.id}</td>
@@ -617,14 +756,13 @@
                         </tr>
                     `;
                 });
-                
-                document.getElementById('listingsBody').innerHTML = html;
+
+                document.getElementById('listingsBody').innerHTML = html || '<tr><td colspan="8" class="loading">No listings</td></tr>';
             } catch (e) {
                 console.error(e);
             }
         }
 
-        // Edit listing
         function editListing(id, price, coins, tradeType, linkType, isActive, isSold) {
             document.getElementById('editListingId').value = id;
             document.getElementById('editPrice').value = price;
@@ -647,10 +785,10 @@
             const tradeType = document.getElementById('editTradeType').value;
             const linkType = document.getElementById('editLinkType').value;
             const status = document.getElementById('editStatus').value;
-            
+
             const isSold = status === 'sold';
             const isActive = status === 'active';
-            
+
             try {
                 const res = await fetch('/api/admin/edit_listing', {
                     method: 'POST',
@@ -665,10 +803,10 @@
                         is_sold: isSold
                     })
                 });
-                
+
                 if (res.ok) {
                     alert('✅ Listing updated');
-                    closeListingModal();
+                    closeEditModal();
                     loadListings();
                 }
             } catch (e) {
@@ -678,7 +816,7 @@
 
         async function deleteListing(id) {
             if (!confirm('Delete this listing?')) return;
-            
+
             try {
                 await fetch('/api/admin/delete_listing', {
                     method: 'POST',
@@ -689,18 +827,18 @@
             } catch (e) {}
         }
 
-        function closeListingModal() {
+        function closeEditModal() {
             document.getElementById('editListingModal').classList.remove('show');
         }
 
-        // ==================== ADMINS (Full CRUD) ====================
+        // ==================== ADMINS (FULL CRUD) ====================
         async function loadAdmins() {
             try {
                 const res = await fetch('/api/admin/admins');
                 const admins = await res.json();
-                
+
                 document.getElementById('totalAdmins').textContent = admins.length;
-                
+
                 let html = '';
                 admins.forEach(a => {
                     html += `
@@ -722,15 +860,15 @@
                         </div>
                     `;
                 });
-                
-                document.getElementById('adminsList').innerHTML = html;
+
+                document.getElementById('adminsList').innerHTML = html || '<div class="loading">No admins</div>';
             } catch (e) {
                 console.error(e);
             }
         }
 
         function showAddAdminModal() {
-            document.getElementById('adminModalTitle').textContent = '➕ ADD ADMIN';
+            document.getElementById('adminModalTitle').textContent = '➕ Add Admin';
             document.getElementById('adminId').value = '';
             document.getElementById('adminName').value = '';
             document.getElementById('adminTelegram').value = '';
@@ -740,7 +878,7 @@
         }
 
         function editAdmin(id, name, telegram, payment) {
-            document.getElementById('adminModalTitle').textContent = '✏️ EDIT ADMIN';
+            document.getElementById('adminModalTitle').textContent = '✏️ Edit Admin';
             document.getElementById('adminId').value = id;
             document.getElementById('adminName').value = name;
             document.getElementById('adminTelegram').value = telegram;
@@ -763,44 +901,54 @@
         async function saveAdmin() {
             const id = document.getElementById('adminId').value;
             const name = document.getElementById('adminName').value;
-            const telegram = document.getElementById('adminTelegram').value;
+            let telegram = document.getElementById('adminTelegram').value;
             const payment = document.getElementById('adminPayment').value;
             const photoFile = document.getElementById('adminPhoto').files[0];
-            
+
+            if (!name || !telegram) {
+                alert('Name and Telegram are required');
+                return;
+            }
+
+            if (!telegram.startsWith('@')) {
+                telegram = '@' + telegram;
+            }
+
             let photoBase64 = null;
             if (photoFile) {
                 photoBase64 = await fileToBase64(photoFile);
             }
-            
+
             const adminData = {
                 name: name,
                 telegram: telegram,
                 payment: payment,
                 profile_photo: photoBase64
             };
-            
+
             try {
                 let res;
                 if (id) {
-                    // Edit
                     res = await fetch(`/api/admin/admins/${id}`, {
                         method: 'PUT',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(adminData)
                     });
                 } else {
-                    // Add
                     res = await fetch('/api/admin/admins', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(adminData)
                     });
                 }
-                
+
                 if (res.ok) {
                     alert(`✅ Admin ${id ? 'updated' : 'added'} successfully`);
                     closeAdminModal();
                     loadAdmins();
+                } else {
+                    const error = await res.json();
+                    alert('Error: ' + error.message);
                 }
             } catch (e) {
                 alert('Error: ' + e.message);
@@ -809,12 +957,15 @@
 
         async function deleteAdmin(id) {
             if (!confirm('Delete this admin?')) return;
-            
+
             try {
-                await fetch(`/api/admin/admins/${id}`, {
+                const res = await fetch(`/api/admin/admins/${id}`, {
                     method: 'DELETE'
                 });
-                loadAdmins();
+
+                if (res.ok) {
+                    loadAdmins();
+                }
             } catch (e) {}
         }
 
@@ -828,21 +979,21 @@
             try {
                 const res = await fetch('/api/skills');
                 const skills = await res.json();
-                
-                let html = '<div class="skills-grid">';
+
+                let html = '';
                 skills.forEach(s => {
                     html += `
                         <div class="skill-item">
                             <span>✨ ${s}</span>
                             <div>
-                                <button class="btn btn-blue btn-small" onclick="editSkill('${s}')">✏️</button>
-                                <button class="btn btn-red btn-small" onclick="deleteSkill('${s}')">🗑️</button>
+                                <button class="btn btn-blue" onclick="editSkill('${s}')">✏️</button>
+                                <button class="btn btn-red" onclick="deleteSkill('${s}')">🗑️</button>
                             </div>
                         </div>
                     `;
                 });
-                html += '</div>';
-                document.getElementById('skillsList').innerHTML = html;
+
+                document.getElementById('skillsList').innerHTML = html || '<div class="loading">No skills</div>';
             } catch (e) {}
         }
 
@@ -851,9 +1002,9 @@
         }
 
         async function addSkill() {
-            const skill = document.getElementById('newSkill').value;
+            const skill = document.getElementById('newSkill').value.trim();
             if (!skill) return;
-            
+
             try {
                 await fetch('/api/admin/skills', {
                     method: 'POST',
@@ -893,23 +1044,27 @@
 
         // ==================== MANUAL POST ====================
         async function manualPost() {
-            const seller = document.getElementById('manualSeller').value;
+            const seller = document.getElementById('manualSeller').value.trim();
             const price = document.getElementById('manualPrice').value;
             const coins = document.getElementById('manualCoins').value;
             const tradeType = document.getElementById('manualTradeType').value;
             const linkType = document.getElementById('manualLinkType').value;
             
-            const mainFile = document.getElementById('manualMainSquad').files[0];
-            const overFile = document.getElementById('manualOverbench').files[0];
-            
+            const mainFile = document.getElementById('manualMain').files[0];
+            const overFile = document.getElementById('manualOver').files[0];
+
             if (!seller || !price || !mainFile || !overFile) {
                 alert('Please fill all required fields');
                 return;
             }
-            
+
+            if (!seller.startsWith('@')) {
+                seller = '@' + seller;
+            }
+
             const mainBase64 = await fileToBase64(mainFile);
             const overBase64 = await fileToBase64(overFile);
-            
+
             try {
                 const res = await fetch('/api/admin/manual_post', {
                     method: 'POST',
@@ -924,13 +1079,19 @@
                         link_type: linkType
                     })
                 });
-                
-                if (res.ok) {
-                    alert('✅ Listing posted successfully');
+
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('✅ Listing posted successfully!');
                     document.getElementById('manualSeller').value = '';
                     document.getElementById('manualPrice').value = '';
-                    document.getElementById('manualMainSquad').value = '';
-                    document.getElementById('manualOverbench').value = '';
+                    document.getElementById('manualCoins').value = '0';
+                    document.getElementById('manualMain').value = '';
+                    document.getElementById('manualOver').value = '';
+                    loadListings();
+                } else {
+                    alert('Error: ' + data.message);
                 }
             } catch (e) {
                 alert('Error: ' + e.message);
