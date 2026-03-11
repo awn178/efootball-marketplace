@@ -20,7 +20,7 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 # Configuration
-BOT_TOKEN = os.environ.get('BOT_TOKEN', '8406169991:AAHcP5z7eHiKiSFGlRH3fOSDQS5gkjK-0EM')
+BOT_TOKEN = "8581114593:AAFlLTXXaMChMohb_co9G6oGo-EQ3GYF4ak"  # New marketplace bot
 OWNER_USERNAME = "awnowner"
 ADMIN_USERNAME = "awnadmin"
 
@@ -180,14 +180,21 @@ def login():
 def test():
     return jsonify({'status': 'Marketplace is running!', 'database': 'connected'})
 
-# ==================== TELEGRAM BOT ENDPOINTS ====================
+# ==================== TELEGRAM BOT ENDPOINTS (SAME AS TOURNAMENT) ====================
 
-@app.route('/bot', methods=['POST'])
+@app.route('/bot', methods=['POST', 'GET'])
 def bot_webhook():
-    """Telegram bot webhook endpoint for marketplace"""
+    """Telegram bot webhook endpoint - same as tournament app"""
+    if request.method == 'GET':
+        return jsonify({
+            'message': 'Bot endpoint is active',
+            'bot': '@ElBICHO_MARKETBOT',
+            'status': 'ready'
+        })
+    
     try:
         data = request.json
-        print(f"🤖 Marketplace bot received: {data}")
+        print(f"🤖 Bot received: {data}")
         
         if data and 'message' in data:
             chat_id = data['message']['chat']['id']
@@ -196,7 +203,7 @@ def bot_webhook():
             username = data['message']['from'].get('username', '')
             
             if text == '/start':
-                # Create inline keyboard with web app button
+                # Create inline keyboard with web app button (just like tournament)
                 keyboard = {
                     'inline_keyboard': [[
                         {
@@ -207,7 +214,7 @@ def bot_webhook():
                 }
                 
                 # Send welcome message with button
-                welcome = f"👋 Welcome {first_name} to eFootball Marketplace!\n\nBuy and sell eFootball accounts securely."
+                welcome = f"👋 Welcome {first_name} to eFootball Marketplace!\n\nBuy and sell eFootball accounts securely.\n\nClick the button below to open the app:"
                 
                 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
                 payload = {
@@ -215,11 +222,11 @@ def bot_webhook():
                     'text': welcome,
                     'reply_markup': keyboard
                 }
-                requests.post(url, json=payload)
-                print(f"✅ Welcome sent to {chat_id}")
+                response = requests.post(url, json=payload)
+                print(f"✅ Welcome sent to {chat_id}: {response.status_code}")
             
             elif text == '/help':
-                help_text = "Available commands:\n/start - Open marketplace\n/help - Show this message"
+                help_text = "Available commands:\n/start - Open the marketplace\n/help - Show this message"
                 send_telegram(chat_id, help_text)
             
             elif text == '/ping':
@@ -232,7 +239,7 @@ def bot_webhook():
 
 @app.route('/setbot', methods=['GET'])
 def set_bot_webhook():
-    """Set the bot webhook to marketplace"""
+    """Set the bot webhook - same as tournament app"""
     webhook_url = "https://efootball-marketplace.onrender.com/bot"
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook?url={webhook_url}"
     response = requests.get(url)
@@ -240,7 +247,7 @@ def set_bot_webhook():
 
 @app.route('/botstatus', methods=['GET'])
 def bot_status():
-    """Check bot webhook status"""
+    """Check bot webhook status - same as tournament app"""
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
     response = requests.get(url)
     return jsonify(response.json())
