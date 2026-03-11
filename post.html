@@ -12,107 +12,278 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-            color: #f3f4f6;
+            background: #f0f2f5;
+            color: #1e293b;
             min-height: 100vh;
         }
-        header {
-            background: #1f2937;
-            padding: 16px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 700;
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid #374151;
         }
-        .container {
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
         .back-btn {
-            background: #374151;
-            color: white;
+            background: #e2e8f0;
+            color: #1e293b;
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            margin-bottom: 20px;
-        }
-        .form-card {
-            background: #1f2937;
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid #374151;
-        }
-        .form-title {
-            color: #2563eb;
-            font-size: 18px;
-            margin-bottom: 24px;
             font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .input-group {
+
+        .back-btn:hover {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-title span {
+            background: #2563eb;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2563eb;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Form Groups */
+        .form-group {
             margin-bottom: 20px;
         }
-        .input-group label {
+
+        .form-group label {
             display: block;
-            color: #9ca3af;
+            color: #64748b;
             font-size: 13px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            font-weight: 500;
         }
-        .form-input {
+
+        .form-group label.required::after {
+            content: " *";
+            color: #ef4444;
+        }
+
+        .form-control {
             width: 100%;
-            padding: 12px;
-            background: #374151;
-            border: 1px solid #4b5563;
-            color: white;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
-        .form-input:focus {
+
+        .form-control:focus {
             outline: none;
             border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
         }
-        .form-input[readonly] {
-            background: #2d3748;
-            color: #10b981;
+
+        .form-control[readonly] {
+            background: #f8fafc;
+            color: #2563eb;
+            font-weight: 500;
         }
-        .upload-area {
-            background: #374151;
-            border: 2px dashed #4b5563;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
+
+        /* Username Field with Edit Toggle */
+        .username-field {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .username-field input {
+            flex: 1;
+        }
+
+        .edit-toggle {
+            background: #e2e8f0;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 10px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
+
+        .edit-toggle:hover {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        /* File Upload */
+        .upload-area {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
         .upload-area:hover {
             border-color: #2563eb;
+            background: #eef2ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
         }
+
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #2563eb;
+        }
+
+        .upload-text {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .upload-hint {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
         .preview-image {
             width: 100%;
             max-height: 200px;
             object-fit: contain;
-            margin-top: 10px;
             border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #e2e8f0;
         }
+
+        /* Radio Group */
         .radio-group {
             display: flex;
             gap: 15px;
-            background: #374151;
-            padding: 12px;
-            border-radius: 8px;
+            flex-wrap: wrap;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
         }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .radio-option input[type="radio"] {
+            accent-color: #2563eb;
+        }
+
+        /* Players Section */
+        .players-container {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
         .player-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
+
         .player-row input {
             flex: 1;
         }
+
         .remove-player {
             background: #ef4444;
             color: white;
@@ -120,152 +291,266 @@
             width: 40px;
             border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .add-player {
+
+        .remove-player:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .add-player-btn {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 8px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
         }
+
+        .add-player-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .add-player-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .player-limit {
+            color: #f59e0b;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Skills Grid */
+        .skills-container {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            background: #374151;
-            padding: 12px;
-            border-radius: 8px;
-            max-height: 200px;
-            overflow-y: auto;
+            gap: 10px;
         }
+
         .skill-checkbox {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 8px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
+
+        .skill-checkbox:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .skill-checkbox input[type="checkbox"] {
+            accent-color: #2563eb;
+        }
+
+        /* Submit Button */
         .submit-btn {
             background: #10b981;
             color: white;
             border: none;
             padding: 16px;
             width: 100%;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
             font-size: 16px;
             cursor: pointer;
+            transition: all 0.3s ease;
             margin-top: 20px;
+            position: relative;
+            overflow: hidden;
         }
-        .username-edit {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
+
+        .submit-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16,185,129,0.3);
         }
-        .edit-toggle {
-            background: #374151;
-            border: 1px solid #4b5563;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
+
+        .submit-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            color: #64748b;
+            padding: 40px;
+        }
+
+        /* Success Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-pulse {
+            animation: pulse 0.5s ease;
         }
     </style>
 </head>
 <body>
-    <header>
-        🛒 SELL ACCOUNT
+    <header class="header">
+        <div class="logo">
+            ⚽ eFootball Marketplace
+        </div>
+        <button class="back-btn" onclick="goBack()">
+            ← BACK TO MARKETPLACE
+        </button>
     </header>
 
     <div class="container">
-        <button class="back-btn" onclick="goBack()">← BACK</button>
-
         <div class="form-card">
-            <div class="form-title">📝 LIST YOUR ACCOUNT</div>
+            <div class="form-title">
+                📝 SELL YOUR ACCOUNT
+                <span>NEW</span>
+            </div>
 
-            <!-- Seller Username -->
-            <div class="input-group">
-                <label>YOUR USERNAME</label>
-                <div class="username-edit">
-                    <input type="text" id="sellerUsername" class="form-input" readonly>
-                    <button class="edit-toggle" onclick="toggleEdit()" id="editBtn">✏️ Edit</button>
+            <!-- Seller Information -->
+            <div class="form-section">
+                <div class="section-title">
+                    👤 SELLER INFORMATION
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Telegram Username</label>
+                    <div class="username-field">
+                        <input type="text" id="sellerUsername" class="form-control" readonly>
+                        <button class="edit-toggle" onclick="toggleEdit()" id="editBtn">✏️ EDIT</button>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 11px; margin-top: 5px;">Your username is auto-filled from Telegram</p>
                 </div>
             </div>
 
-            <!-- Main Squad -->
-            <div class="input-group">
-                <label>MAIN SQUAD *</label>
-                <div class="upload-area" onclick="document.getElementById('mainSquad').click()">
-                    📸 Click to upload
+            <!-- Screenshots -->
+            <div class="form-section">
+                <div class="section-title">
+                    📸 SCREENSHOTS
                 </div>
-                <input type="file" id="mainSquad" accept="image/*" style="display: none;" onchange="previewImage(this, 'mainPreview')">
-                <img id="mainPreview" class="preview-image" style="display: none;">
-            </div>
 
-            <!-- Overbench -->
-            <div class="input-group">
-                <label>OVERBENCH *</label>
-                <div class="upload-area" onclick="document.getElementById('overbench').click()">
-                    📸 Click to upload
+                <div class="form-group">
+                    <label class="required">Main Squad</label>
+                    <div class="upload-area" onclick="document.getElementById('mainSquad').click()">
+                        <div class="upload-icon">📱</div>
+                        <div class="upload-text">Click to upload main squad screenshot</div>
+                        <div class="upload-hint">PNG, JPG up to 5MB</div>
+                    </div>
+                    <input type="file" id="mainSquad" accept="image/*" style="display: none;" onchange="previewImage(this, 'mainPreview')">
+                    <img id="mainPreview" class="preview-image" style="display: none;">
                 </div>
-                <input type="file" id="overbench" accept="image/*" style="display: none;" onchange="previewImage(this, 'overPreview')">
-                <img id="overPreview" class="preview-image" style="display: none;">
-            </div>
 
-            <!-- Price -->
-            <div class="input-group">
-                <label>PRICE (ETB) *</label>
-                <input type="number" id="price" class="form-input" min="0">
-            </div>
-
-            <!-- Coins -->
-            <div class="input-group">
-                <label>COINS</label>
-                <input type="number" id="coins" class="form-input" value="0" min="0">
-            </div>
-
-            <!-- Trade Type -->
-            <div class="input-group">
-                <label>TRADE TYPE *</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="tradeType" value="FOR SALE" checked> 💰 SALE</label>
-                    <label><input type="radio" name="tradeType" value="FOR EXCHANGE"> 🔄 EXCHANGE</label>
-                    <label><input type="radio" name="tradeType" value="SALE & EXCHANGE"> 🔄💰 BOTH</label>
+                <div class="form-group">
+                    <label class="required">Overbench Squad</label>
+                    <div class="upload-area" onclick="document.getElementById('overbench').click()">
+                        <div class="upload-icon">📱</div>
+                        <div class="upload-text">Click to upload overbench screenshot</div>
+                        <div class="upload-hint">PNG, JPG up to 5MB</div>
+                    </div>
+                    <input type="file" id="overbench" accept="image/*" style="display: none;" onchange="previewImage(this, 'overPreview')">
+                    <img id="overPreview" class="preview-image" style="display: none;">
                 </div>
             </div>
 
-            <!-- Link Type -->
-            <div class="input-group">
-                <label>LINK TYPE *</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="linkType" value="KONAMI LINK" checked> 🔗 KONAMI</label>
-                    <label><input type="radio" name="linkType" value="GOOGLE LINK"> 🔗 GOOGLE</label>
+            <!-- Pricing & Details -->
+            <div class="form-section">
+                <div class="section-title">
+                    💰 PRICING & DETAILS
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Price (ETB)</label>
+                    <input type="number" id="price" class="form-control" placeholder="e.g., 1500" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Coins (Optional)</label>
+                    <input type="number" id="coins" class="form-control" placeholder="Enter coin amount" value="0" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Trade Type</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="tradeType" value="FOR SALE" checked> 💰 FOR SALE
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="tradeType" value="FOR EXCHANGE"> 🔄 EXCHANGE
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="tradeType" value="SALE & EXCHANGE"> 🔄💰 BOTH
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Link Type</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="linkType" value="KONAMI LINK" checked> 🔗 KONAMI LINK
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="linkType" value="GOOGLE LINK"> 🔗 GOOGLE LINK
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <!-- Featured Players -->
-            <div class="input-group">
-                <label>FEATURED PLAYERS (Max 4) *</label>
-                <div id="playersContainer">
-                    <div class="player-row">
-                        <input type="text" class="player-input" placeholder="Player name">
-                    </div>
+            <div class="form-section">
+                <div class="section-title">
+                    ⭐ FEATURED PLAYERS
                 </div>
-                <button class="add-player" onclick="addPlayer()">➕ ADD PLAYER</button>
-                <p id="playerLimit" style="color: #f59e0b; font-size: 12px; display: none;">Maximum 4 players</p>
+
+                <div class="players-container">
+                    <div id="playersContainer">
+                        <div class="player-row">
+                            <input type="text" class="player-input form-control" placeholder="e.g., Messi" maxlength="50">
+                        </div>
+                    </div>
+                    <button class="add-player-btn" onclick="addPlayer()" id="addPlayerBtn">➕ ADD PLAYER</button>
+                    <div id="playerLimit" class="player-limit" style="display: none;">Maximum 4 players allowed</div>
+                </div>
             </div>
 
-            <!-- Skills -->
-            <div class="input-group">
-                <label>SPECIAL SKILLS</label>
-                <div id="skillsContainer" class="skills-grid">
+            <!-- Special Skills -->
+            <div class="form-section">
+                <div class="section-title">
+                    ✨ SPECIAL SKILLS
+                </div>
+
+                <div class="skills-container" id="skillsContainer">
                     <div class="loading">Loading skills...</div>
                 </div>
             </div>
 
-            <!-- Submit -->
-            <button class="submit-btn" onclick="submitListing()" id="submitBtn">✅ POST LISTING</button>
+            <!-- Submit Button -->
+            <button class="submit-btn" onclick="submitListing()" id="submitBtn">
+                ✅ POST LISTING
+            </button>
         </div>
     </div>
 
@@ -281,64 +566,93 @@
             window.location.href = '/';
         }
 
-        // Initialize Telegram
-        if (tg) {
-            tg.ready();
-            const user = tg.initDataUnsafe?.user;
-            if (user && user.username) {
-                document.getElementById('sellerUsername').value = '@' + user.username;
+        // Initialize Telegram and set username
+        function initTelegram() {
+            if (tg) {
+                tg.ready();
+                const user = tg.initDataUnsafe?.user;
+                if (user && user.username) {
+                    document.getElementById('sellerUsername').value = '@' + user.username;
+                } else {
+                    document.getElementById('sellerUsername').value = username;
+                }
             } else {
                 document.getElementById('sellerUsername').value = username;
             }
-        } else {
-            document.getElementById('sellerUsername').value = username;
         }
 
-        // Toggle edit
+        initTelegram();
+
+        // Toggle username edit
         function toggleEdit() {
             const field = document.getElementById('sellerUsername');
             const btn = document.getElementById('editBtn');
             
             if (field.readOnly) {
                 field.readOnly = false;
-                btn.textContent = '🔒 Lock';
+                field.focus();
+                btn.textContent = '🔒 LOCK';
+                btn.style.background = '#10b981';
+                btn.style.color = 'white';
             } else {
                 field.readOnly = true;
-                btn.textContent = '✏️ Edit';
+                btn.textContent = '✏️ EDIT';
+                btn.style.background = '#e2e8f0';
+                btn.style.color = '#1e293b';
             }
         }
 
         // Preview image
         function previewImage(input, previewId) {
             if (input.files && input.files[0]) {
+                const file = input.files[0];
                 const reader = new FileReader();
+                
                 reader.onload = function(e) {
                     document.getElementById(previewId).src = e.target.result;
                     document.getElementById(previewId).style.display = 'block';
                     
-                    if (previewId === 'mainPreview') mainBase64 = e.target.result;
-                    else overBase64 = e.target.result;
+                    if (previewId === 'mainPreview') {
+                        mainBase64 = e.target.result;
+                    } else {
+                        overBase64 = e.target.result;
+                    }
                 };
-                reader.readAsDataURL(input.files[0]);
+                
+                reader.readAsDataURL(file);
             }
         }
 
-        // Add player
+        // Add player input
         function addPlayer() {
             if (playerCount >= 4) {
                 document.getElementById('playerLimit').style.display = 'block';
+                document.getElementById('addPlayerBtn').disabled = true;
                 return;
             }
             
             const container = document.getElementById('playersContainer');
-            const row = document.createElement('div');
-            row.className = 'player-row';
-            row.innerHTML = `
-                <input type="text" class="player-input" placeholder="Player name">
-                <button class="remove-player" onclick="this.parentElement.remove(); playerCount--;">✖</button>
+            const newRow = document.createElement('div');
+            newRow.className = 'player-row';
+            newRow.innerHTML = `
+                <input type="text" class="player-input form-control" placeholder="Player name" maxlength="50">
+                <button class="remove-player" onclick="removePlayer(this)">✖</button>
             `;
-            container.appendChild(row);
+            container.appendChild(newRow);
             playerCount++;
+            
+            if (playerCount >= 4) {
+                document.getElementById('playerLimit').style.display = 'block';
+                document.getElementById('addPlayerBtn').disabled = true;
+            }
+        }
+
+        // Remove player input
+        function removePlayer(btn) {
+            btn.parentElement.remove();
+            playerCount--;
+            document.getElementById('playerLimit').style.display = 'none';
+            document.getElementById('addPlayerBtn').disabled = false;
         }
 
         // Load skills
@@ -347,22 +661,35 @@
                 const res = await fetch('/api/skills');
                 const skills = await res.json();
                 
-                let html = '';
-                skills.forEach(s => {
+                const container = document.getElementById('skillsContainer');
+                
+                if (!skills || skills.length === 0) {
+                    container.innerHTML = '<p style="color: #64748b;">No skills available</p>';
+                    return;
+                }
+                
+                let html = '<div class="skills-grid">';
+                skills.forEach(skill => {
                     html += `
                         <label class="skill-checkbox">
-                            <input type="checkbox" value="${s}">
-                            <span>✨ ${s}</span>
+                            <input type="checkbox" value="${skill}">
+                            <span>✨ ${skill}</span>
                         </label>
                     `;
                 });
-                document.getElementById('skillsContainer').innerHTML = html;
-            } catch (e) {}
+                html += '</div>';
+                
+                container.innerHTML = html;
+                
+            } catch (e) {
+                console.error('Error loading skills:', e);
+                document.getElementById('skillsContainer').innerHTML = '<p style="color: #ef4444;">Error loading skills</p>';
+            }
         }
 
         // Submit listing
         async function submitListing() {
-            const seller = document.getElementById('sellerUsername').value;
+            const seller = document.getElementById('sellerUsername').value.trim();
             const price = document.getElementById('price').value;
             const coins = document.getElementById('coins').value;
             const tradeType = document.querySelector('input[name="tradeType"]:checked').value;
@@ -371,7 +698,9 @@
             // Get featured players
             const players = [];
             document.querySelectorAll('.player-input').forEach(input => {
-                if (input.value.trim()) players.push(input.value.trim());
+                if (input.value.trim()) {
+                    players.push(input.value.trim());
+                }
             });
             
             // Get selected skills
@@ -385,15 +714,37 @@
                 alert('Please upload both screenshots');
                 return;
             }
-            if (!price) {
-                alert('Please enter price');
+            
+            if (!price || price <= 0) {
+                alert('Please enter a valid price');
                 return;
             }
+            
             if (players.length === 0) {
                 alert('Please enter at least one featured player');
                 return;
             }
             
+            // Format seller username
+            let formattedSeller = seller;
+            if (!formattedSeller.startsWith('@')) {
+                formattedSeller = '@' + formattedSeller;
+            }
+            
+            // Prepare data
+            const listingData = {
+                seller_username: formattedSeller,
+                main_screenshot: mainBase64,
+                overbench_screenshot: overBase64,
+                price: parseInt(price),
+                coin_amount: parseInt(coins) || 0,
+                trade_type: tradeType,
+                link_type: linkType,
+                featured_players: players.slice(0, 4),
+                special_skills: skills
+            };
+            
+            // Disable button and show loading
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.textContent = 'POSTING...';
@@ -402,29 +753,25 @@
                 const res = await fetch('/api/create_listing', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        seller_username: seller,
-                        main_screenshot: mainBase64,
-                        overbench_screenshot: overBase64,
-                        price: parseInt(price),
-                        coin_amount: parseInt(coins),
-                        trade_type: tradeType,
-                        link_type: linkType,
-                        featured_players: players,
-                        special_skills: skills
-                    })
+                    body: JSON.stringify(listingData)
                 });
                 
                 const data = await res.json();
                 
                 if (data.success) {
-                    alert('✅ Listing posted!');
-                    window.location.href = '/';
+                    submitBtn.classList.add('success-pulse');
+                    submitBtn.textContent = '✅ POSTED!';
+                    
+                    setTimeout(() => {
+                        alert('✅ Listing posted successfully!');
+                        window.location.href = '/';
+                    }, 500);
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('Error: ' + (data.message || 'Failed to post'));
                     submitBtn.disabled = false;
                     submitBtn.textContent = '✅ POST LISTING';
                 }
+                
             } catch (e) {
                 alert('Error: ' + e.message);
                 submitBtn.disabled = false;
@@ -432,6 +779,7 @@
             }
         }
 
+        // Go back
         function goBack() {
             window.location.href = '/';
         }
@@ -440,4 +788,4 @@
         loadSkills();
     </script>
 </body>
-</html>
+    </html>
