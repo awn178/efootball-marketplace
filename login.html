@@ -11,52 +11,83 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-            color: #f3f4f6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
+
         .login-container {
-            background: #1f2937;
-            padding: 40px 30px;
+            background: white;
             border-radius: 20px;
-            border: 1px solid #374151;
-            width: 90%;
+            padding: 40px;
+            width: 100%;
             max-width: 400px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease;
         }
-        .login-container h2 {
-            color: #2563eb;
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
             text-align: center;
             margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #2563eb;
             font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
             font-weight: 700;
         }
-        .login-input {
+
+        .logo p {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1e293b;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
             width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            background: #374151;
-            border: 1px solid #4b5563;
-            color: #f3f4f6;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-family: 'Inter', sans-serif;
             font-size: 15px;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
-        .login-input:focus {
+
+        .form-control:focus {
             outline: none;
             border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
         }
+
         .login-btn {
             width: 100%;
             padding: 14px;
@@ -66,17 +97,17 @@
             border-radius: 10px;
             font-weight: 600;
             font-size: 16px;
-            margin-top: 20px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
+
         .login-btn:hover {
             background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37,99,235,0.3);
         }
-        .login-btn:disabled {
-            background: #4b5563;
-            cursor: not-allowed;
-        }
+
         .error-message {
             color: #ef4444;
             text-align: center;
@@ -84,24 +115,23 @@
             font-size: 14px;
             min-height: 20px;
         }
-        .info-text {
-            color: #9ca3af;
+
+        .back-link {
             text-align: center;
             margin-top: 20px;
-            font-size: 13px;
         }
-        .back-link {
-            color: #10b981;
+
+        .back-link a {
+            color: #64748b;
             text-decoration: none;
-            display: inline-block;
-            margin-top: 15px;
             font-size: 14px;
-            transition: color 0.2s;
+            transition: color 0.3s ease;
         }
-        .back-link:hover {
-            color: #059669;
-            text-decoration: underline;
+
+        .back-link a:hover {
+            color: #2563eb;
         }
+
         .loading {
             display: none;
             text-align: center;
@@ -112,84 +142,66 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>
-            <span>👑</span> ADMIN LOGIN
-        </h2>
-        
-        <input type="text" id="username" class="login-input" placeholder="Telegram Username (with @)" autocomplete="off">
-        <input type="password" id="password" class="login-input" placeholder="PIN">
-        
-        <button class="login-btn" onclick="handleLogin()" id="loginBtn">LOGIN</button>
-        <div id="loading" class="loading">Authenticating...</div>
-        
-        <div id="errorMsg" class="error-message"></div>
-        
-        <div class="info-text">
-            <div>Use your admin credentials</div>
+        <div class="logo">
+            <h1>👑 ADMIN LOGIN</h1>
+            <p>eFootball Marketplace</p>
         </div>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="/" class="back-link">← Back to Marketplace</a>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="username" class="form-control" placeholder="Enter username" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" class="form-control" placeholder="Enter password">
+        </div>
+
+        <button class="login-btn" onclick="handleLogin()" id="loginBtn">LOGIN</button>
+        <div id="loading" class="loading">Authenticating...</div>
+        <div id="errorMsg" class="error-message"></div>
+
+        <div class="back-link">
+            <a href="/">← Back to Marketplace</a>
         </div>
     </div>
 
     <script>
-        async function handleLogin() {
+        function handleLogin() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorDiv = document.getElementById('errorMsg');
             const loginBtn = document.getElementById('loginBtn');
             const loading = document.getElementById('loading');
             
-            // Clear previous error
             errorDiv.textContent = '';
             
-            // Check if fields are empty
             if (!username || !password) {
-                errorDiv.textContent = 'Please enter both username and PIN';
+                errorDiv.textContent = 'Please enter both username and password';
                 return;
             }
             
-            // Format username
-            let formattedUsername = username;
-            if (!formattedUsername.startsWith('@')) {
-                formattedUsername = '@' + formattedUsername;
-            }
-            
-            // Disable button and show loading
             loginBtn.disabled = true;
             loading.style.display = 'block';
             
-            try {
-                const res = await fetch('/api/admin/login', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        username: formattedUsername,
-                        password: password
-                    })
-                });
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    // Store admin info
-                    localStorage.setItem('adminUser', data.username);
-                    localStorage.setItem('adminRole', data.role);
+            // Hardcoded credentials as requested
+            setTimeout(() => {
+                if (username === 'awnowner' && password === '12604') {
+                    localStorage.setItem('adminUser', username);
+                    localStorage.setItem('adminRole', 'owner');
+                    window.location.href = '/admin';
+                } else if (username === 'awnadmin' && password === '11512') {
+                    localStorage.setItem('adminUser', username);
+                    localStorage.setItem('adminRole', 'admin');
                     window.location.href = '/admin';
                 } else {
-                    errorDiv.textContent = data.message || 'Invalid credentials';
+                    errorDiv.textContent = 'Invalid username or password';
                     loginBtn.disabled = false;
                     loading.style.display = 'none';
                 }
-            } catch (e) {
-                errorDiv.textContent = 'Connection error';
-                loginBtn.disabled = false;
-                loading.style.display = 'none';
-            }
+            }, 800);
         }
         
-        // Check if already logged in
         function checkLogin() {
             const adminUser = localStorage.getItem('adminUser');
             const adminRole = localStorage.getItem('adminRole');
@@ -199,7 +211,6 @@
             }
         }
         
-        // Run check on page load
         checkLogin();
     </script>
 </body>
