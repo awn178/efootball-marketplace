@@ -18,9 +18,10 @@
             background: #0a0c10;
             color: #e5e7eb;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        /* Header - Dark Mode */
         .header {
             background: #1a1e24;
             padding: 12px 20px;
@@ -72,7 +73,7 @@
             width: 100%;
         }
 
-        /* Form Card */
+        /* Form Card - Dark Mode */
         .form-card {
             background: #1a1e24;
             border-radius: 16px;
@@ -199,7 +200,7 @@
             border-color: #60a5fa;
         }
 
-        /* File Upload */
+        /* File Upload - Dark Mode */
         .upload-area {
             background: #2d3748;
             border: 2px dashed #4b5563;
@@ -239,9 +240,10 @@
             border-radius: 8px;
             margin-top: 10px;
             border: 1px solid #4b5563;
+            background: #0a0c10;
         }
 
-        /* Radio Group */
+        /* Radio Group - Dark Mode */
         .radio-group {
             display: flex;
             gap: 12px;
@@ -272,7 +274,7 @@
             accent-color: #60a5fa;
         }
 
-        /* Players Section */
+        /* Players Section - Dark Mode */
         .players-container {
             background: #2d3748;
             padding: 15px;
@@ -297,6 +299,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 600;
         }
 
         .remove-player:hover {
@@ -331,7 +334,7 @@
             margin-top: 5px;
         }
 
-        /* Skills Grid */
+        /* Skills Grid - Dark Mode */
         .skills-container {
             background: #2d3748;
             padding: 15px;
@@ -356,6 +359,7 @@
             cursor: pointer;
             border: 1px solid #4b5563;
             transition: all 0.3s ease;
+            font-size: 13px;
         }
 
         .skill-checkbox:hover {
@@ -366,7 +370,7 @@
             accent-color: #60a5fa;
         }
 
-        /* Submit Button */
+        /* Submit Button - Dark Mode */
         .submit-btn {
             background: #10b981;
             color: white;
@@ -383,7 +387,7 @@
             overflow: hidden;
         }
 
-        .submit-btn:hover {
+        .submit-btn:hover:not(:disabled) {
             background: #059669;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
@@ -395,7 +399,7 @@
             transform: none;
         }
 
-        /* Loading State */
+        /* Loading State - Full Screen Overlay */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -403,7 +407,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(10, 12, 16, 0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -411,13 +415,13 @@
         }
 
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #2d3748;
-            border-top: 3px solid #60a5fa;
+            width: 60px;
+            height: 60px;
+            border: 4px solid #2d3748;
+            border-top: 4px solid #60a5fa;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -427,11 +431,26 @@
 
         .loading-text {
             color: #e5e7eb;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .loading-subtext {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-top: 8px;
         }
 
         /* Responsive */
         @media (max-width: 480px) {
+            .header {
+                padding: 10px 16px;
+            }
+
+            .logo {
+                font-size: 16px;
+            }
+
             .form-card {
                 padding: 16px;
             }
@@ -454,6 +473,14 @@
 
             .skills-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .form-title {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 14px;
             }
         }
     </style>
@@ -479,6 +506,7 @@
             <div id="loadingOverlay" class="loading-overlay">
                 <div class="loading-spinner"></div>
                 <div class="loading-text">Posting your listing...</div>
+                <div class="loading-subtext">Please wait, do not close this page</div>
             </div>
 
             <!-- Seller Information -->
@@ -511,7 +539,7 @@
                         <div class="upload-hint">PNG, JPG up to 5MB</div>
                     </div>
                     <input type="file" id="mainSquad" accept="image/*" style="display: none;" onchange="previewImage(this, 'mainPreview')">
-                    <img id="mainPreview" class="preview-image" style="display: none;">
+                    <img id="mainPreview" class="preview-image" style="display: none;" alt="Main Squad Preview">
                 </div>
 
                 <div class="form-group">
@@ -522,7 +550,7 @@
                         <div class="upload-hint">PNG, JPG up to 5MB</div>
                     </div>
                     <input type="file" id="overbench" accept="image/*" style="display: none;" onchange="previewImage(this, 'overPreview')">
-                    <img id="overPreview" class="preview-image" style="display: none;">
+                    <img id="overPreview" class="preview-image" style="display: none;" alt="Overbench Preview">
                 </div>
             </div>
 
@@ -594,7 +622,7 @@
                 </div>
 
                 <div class="skills-container" id="skillsContainer">
-                    <div class="loading">Loading skills...</div>
+                    <div style="color: #9ca3af; text-align: center; padding: 20px;">Loading skills...</div>
                 </div>
             </div>
 
@@ -611,6 +639,7 @@
         let playerCount = 1;
         let mainBase64 = null;
         let overBase64 = null;
+        let isSubmitting = false;
 
         // Redirect if not logged in
         if (!username) {
@@ -621,6 +650,8 @@
         function initTelegram() {
             if (tg) {
                 tg.ready();
+                tg.setBackgroundColor('#0a0c10');
+                tg.setHeaderColor('#1a1e24');
                 const user = tg.initDataUnsafe?.user;
                 if (user && user.username) {
                     document.getElementById('sellerUsername').value = '@' + user.username;
@@ -645,15 +676,17 @@
                 btn.textContent = '🔒 LOCK';
                 btn.style.background = '#10b981';
                 btn.style.color = 'white';
+                btn.style.borderColor = '#10b981';
             } else {
                 field.readOnly = true;
                 btn.textContent = '✏️ EDIT';
                 btn.style.background = '#2d3748';
                 btn.style.color = '#e5e7eb';
+                btn.style.borderColor = '#4b5563';
             }
         }
 
-        // Preview image
+        // Preview image with compression
         function previewImage(input, previewId) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
@@ -661,24 +694,70 @@
                 // Check file size (5MB limit)
                 if (file.size > 5 * 1024 * 1024) {
                     alert('File size too large. Maximum 5MB.');
+                    input.value = '';
                     return;
                 }
                 
                 const reader = new FileReader();
                 
                 reader.onload = function(e) {
-                    document.getElementById(previewId).src = e.target.result;
-                    document.getElementById(previewId).style.display = 'block';
+                    const img = document.getElementById(previewId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
                     
-                    if (previewId === 'mainPreview') {
-                        mainBase64 = e.target.result;
+                    // Compress image if too large
+                    if (e.target.result.length > 500000) {
+                        compressImage(e.target.result, function(compressed) {
+                            if (previewId === 'mainPreview') {
+                                mainBase64 = compressed;
+                            } else {
+                                overBase64 = compressed;
+                            }
+                        });
                     } else {
-                        overBase64 = e.target.result;
+                        if (previewId === 'mainPreview') {
+                            mainBase64 = e.target.result;
+                        } else {
+                            overBase64 = e.target.result;
+                        }
                     }
                 };
                 
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Compress image to reduce size
+        function compressImage(base64, callback) {
+            const img = new Image();
+            img.src = base64;
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Scale down if too large
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 1200;
+                
+                if (width > maxSize || height > maxSize) {
+                    if (width > height) {
+                        height = (height / width) * maxSize;
+                        width = maxSize;
+                    } else {
+                        width = (width / height) * maxSize;
+                        height = maxSize;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Get compressed base64
+                const compressed = canvas.toDataURL('image/jpeg', 0.8);
+                callback(compressed);
+            };
         }
 
         // Add player input
@@ -713,8 +792,11 @@
             document.getElementById('addPlayerBtn').disabled = false;
         }
 
-        // Load skills
+        // Load skills with caching
+        let skillsLoaded = false;
         async function loadSkills() {
+            if (skillsLoaded) return;
+            
             try {
                 const res = await fetch('/api/skills');
                 const skills = await res.json();
@@ -722,7 +804,7 @@
                 const container = document.getElementById('skillsContainer');
                 
                 if (!skills || skills.length === 0) {
-                    container.innerHTML = '<p style="color: #9ca3af;">No skills available</p>';
+                    container.innerHTML = '<p style="color: #9ca3af; text-align: center;">No skills available</p>';
                     return;
                 }
                 
@@ -738,15 +820,18 @@
                 html += '</div>';
                 
                 container.innerHTML = html;
+                skillsLoaded = true;
                 
             } catch (e) {
                 console.error('Error loading skills:', e);
-                document.getElementById('skillsContainer').innerHTML = '<p style="color: #ef4444;">Error loading skills</p>';
+                document.getElementById('skillsContainer').innerHTML = '<p style="color: #ef4444; text-align: center;">Error loading skills. <button onclick="loadSkills()" style="background: #2563eb; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-left: 10px;">Retry</button></p>';
             }
         }
 
-        // Submit listing
+        // Submit listing with loading state
         async function submitListing() {
+            if (isSubmitting) return;
+            
             const seller = document.getElementById('sellerUsername').value.trim();
             const price = document.getElementById('price').value;
             const coins = document.getElementById('coins').value;
@@ -802,12 +887,14 @@
                 special_skills: skills
             };
             
-            // Show loading overlay
+            // Show loading overlay and disable button
+            isSubmitting = true;
             const loadingOverlay = document.getElementById('loadingOverlay');
             const submitBtn = document.getElementById('submitBtn');
             
             loadingOverlay.style.display = 'flex';
             submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ POSTING...';
             
             try {
                 const res = await fetch('/api/create_listing', {
@@ -823,14 +910,18 @@
                     window.location.href = '/';
                 } else {
                     alert('Error: ' + (data.message || 'Failed to post'));
+                    isSubmitting = false;
                     loadingOverlay.style.display = 'none';
                     submitBtn.disabled = false;
+                    submitBtn.textContent = '✅ POST LISTING';
                 }
                 
             } catch (e) {
                 alert('Error: ' + e.message);
+                isSubmitting = false;
                 loadingOverlay.style.display = 'none';
                 submitBtn.disabled = false;
+                submitBtn.textContent = '✅ POST LISTING';
             }
         }
 
@@ -841,6 +932,13 @@
 
         // Load skills on page load
         loadSkills();
+
+        // Prevent accidental navigation while submitting
+        window.onbeforeunload = function() {
+            if (isSubmitting) {
+                return 'Your listing is being posted. Are you sure you want to leave?';
+            }
+        };
     </script>
 </body>
 </html>
