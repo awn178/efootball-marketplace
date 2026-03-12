@@ -17,9 +17,10 @@
             background: #0a0c10;
             color: #e5e7eb;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        /* Header - Dark Mode */
         .header {
             background: #1a1e24;
             padding: 12px 20px;
@@ -344,6 +345,7 @@
             object-fit: contain;
             margin-top: 10px;
             border-radius: 8px;
+            border: 1px solid #4b5563;
         }
 
         /* Skills Grid */
@@ -481,6 +483,11 @@
             background: #1d4ed8;
         }
 
+        .add-player-btn:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+        }
+
         /* Skills Checkboxes */
         .skills-container {
             background: #2d3748;
@@ -504,10 +511,53 @@
             background: #1a1e24;
             border-radius: 6px;
             cursor: pointer;
+            font-size: 13px;
         }
 
         .skill-checkbox input[type="checkbox"] {
             accent-color: #60a5fa;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 12, 16, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #2d3748;
+            border-top: 4px solid #60a5fa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #e5e7eb;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .loading-subtext {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-top: 8px;
         }
 
         /* Modal */
@@ -579,21 +629,6 @@
             padding: 40px;
         }
 
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #2d3748;
-            border-top: 3px solid #60a5fa;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -632,6 +667,14 @@
             .admins-grid {
                 grid-template-columns: 1fr;
             }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -646,6 +689,10 @@
             .btn {
                 padding: 6px 10px;
                 font-size: 11px;
+            }
+
+            .skills-checkbox-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -751,52 +798,55 @@
             <div id="post-section" class="section">
                 <div class="card">
                     <h2>📝 Manual Post Listing</h2>
-                    <div id="manualPostLoading" style="display: none;">
+                    
+                    <!-- Loading Overlay -->
+                    <div id="manualPostLoading" class="loading-overlay">
                         <div class="loading-spinner"></div>
-                        <div style="text-align: center; color: #9ca3af;">Posting listing...</div>
+                        <div class="loading-text">Posting your listing...</div>
+                        <div class="loading-subtext">Please wait, do not close this page</div>
                     </div>
                     
                     <form id="manualPostForm" onsubmit="return false;">
                         <div class="form-group">
-                            <label>Seller Username</label>
+                            <label>Seller Username *</label>
                             <input type="text" id="manualSeller" class="form-control" placeholder="@username" required>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Main Squad Screenshot</label>
+                                <label>Main Squad Screenshot *</label>
                                 <div class="upload-area" onclick="document.getElementById('manualMain').click()">
-                                    📸 Click to upload
+                                    📸 Click to upload Main Squad
                                 </div>
                                 <input type="file" id="manualMain" accept="image/*" style="display: none;" onchange="previewManualImage(this, 'mainPreview')">
-                                <img id="mainPreview" class="preview-image" style="display: none;">
+                                <img id="mainPreview" class="preview-image" style="display: none;" alt="Main Preview">
                             </div>
 
                             <div class="form-group">
-                                <label>Overbench Screenshot</label>
+                                <label>Overbench Screenshot *</label>
                                 <div class="upload-area" onclick="document.getElementById('manualOver').click()">
-                                    📸 Click to upload
+                                    📸 Click to upload Overbench
                                 </div>
                                 <input type="file" id="manualOver" accept="image/*" style="display: none;" onchange="previewManualImage(this, 'overPreview')">
-                                <img id="overPreview" class="preview-image" style="display: none;">
+                                <img id="overPreview" class="preview-image" style="display: none;" alt="Overbench Preview">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Price (ETB)</label>
-                                <input type="number" id="manualPrice" class="form-control" required>
+                                <label>Price (ETB) *</label>
+                                <input type="number" id="manualPrice" class="form-control" placeholder="e.g., 1500" required>
                             </div>
 
                             <div class="form-group">
                                 <label>Coins</label>
-                                <input type="number" id="manualCoins" class="form-control" value="0">
+                                <input type="number" id="manualCoins" class="form-control" value="0" placeholder="0">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Trade Type</label>
+                                <label>Trade Type *</label>
                                 <select id="manualTradeType" class="form-control">
                                     <option value="FOR SALE">FOR SALE</option>
                                     <option value="FOR EXCHANGE">FOR EXCHANGE</option>
@@ -805,7 +855,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Link Type</label>
+                                <label>Link Type *</label>
                                 <select id="manualLinkType" class="form-control">
                                     <option value="KONAMI LINK">KONAMI LINK</option>
                                     <option value="GOOGLE LINK">GOOGLE LINK</option>
@@ -815,11 +865,11 @@
 
                         <!-- Featured Players (Max 4) -->
                         <div class="form-group">
-                            <label>Featured Players (Max 4)</label>
+                            <label>Featured Players (Max 4) *</label>
                             <div class="players-container">
                                 <div id="manualPlayersContainer">
                                     <div class="player-row">
-                                        <input type="text" class="manual-player-input form-control" placeholder="Player name">
+                                        <input type="text" class="manual-player-input form-control" placeholder="e.g., Messi" maxlength="50">
                                     </div>
                                 </div>
                                 <button type="button" class="add-player-btn" onclick="addManualPlayer()" id="addManualPlayerBtn">➕ ADD PLAYER</button>
@@ -849,12 +899,12 @@
             <input type="hidden" id="adminId">
             
             <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="adminName" class="form-control" placeholder="John Doe">
+                <label>Full Name *</label>
+                <input type="text" id="adminNameInput" class="form-control" placeholder="John Doe">
             </div>
             
             <div class="form-group">
-                <label>Telegram Username</label>
+                <label>Telegram Username *</label>
                 <input type="text" id="adminTelegram" class="form-control" placeholder="@username">
             </div>
             
@@ -876,37 +926,59 @@
         </div>
     </div>
 
-    <!-- Edit Listing Modal -->
+    <!-- Edit Listing Modal (Full Features) -->
     <div class="modal" id="editListingModal">
         <div class="modal-content">
             <h3>✏️ Edit Listing</h3>
             <input type="hidden" id="editListingId">
             
-            <div class="form-group">
-                <label>Price (ETB)</label>
-                <input type="number" id="editPrice" class="form-control">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Price (ETB)</label>
+                    <input type="number" id="editPrice" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label>Coins</label>
+                    <input type="number" id="editCoins" class="form-control">
+                </div>
             </div>
             
-            <div class="form-group">
-                <label>Coins</label>
-                <input type="number" id="editCoins" class="form-control">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Trade Type</label>
+                    <select id="editTradeType" class="form-control">
+                        <option value="FOR SALE">FOR SALE</option>
+                        <option value="FOR EXCHANGE">FOR EXCHANGE</option>
+                        <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Link Type</label>
+                    <select id="editLinkType" class="form-control">
+                        <option value="KONAMI LINK">KONAMI LINK</option>
+                        <option value="GOOGLE LINK">GOOGLE LINK</option>
+                    </select>
+                </div>
             </div>
-            
+
+            <!-- Edit Featured Players -->
             <div class="form-group">
-                <label>Trade Type</label>
-                <select id="editTradeType" class="form-control">
-                    <option value="FOR SALE">FOR SALE</option>
-                    <option value="FOR EXCHANGE">FOR EXCHANGE</option>
-                    <option value="SALE & EXCHANGE">SALE & EXCHANGE</option>
-                </select>
+                <label>Featured Players (Max 4)</label>
+                <div class="players-container" id="editPlayersContainer">
+                    <!-- Dynamically populated -->
+                </div>
+                <button type="button" class="add-player-btn" onclick="addEditPlayer()" id="addEditPlayerBtn">➕ ADD PLAYER</button>
+                <div id="editPlayerLimit" style="color: #f59e0b; font-size: 12px; margin-top: 5px; display: none;">Maximum 4 players allowed</div>
             </div>
-            
+
+            <!-- Edit Special Skills -->
             <div class="form-group">
-                <label>Link Type</label>
-                <select id="editLinkType" class="form-control">
-                    <option value="KONAMI LINK">KONAMI LINK</option>
-                    <option value="GOOGLE LINK">GOOGLE LINK</option>
-                </select>
+                <label>Special Skills</label>
+                <div class="skills-container" id="editSkillsContainer">
+                    <!-- Dynamically populated -->
+                </div>
             </div>
             
             <div class="form-group">
@@ -944,6 +1016,9 @@
         let adminRole = '';
         let adminUser = '';
         let manualPlayerCount = 1;
+        let editPlayerCount = 0;
+        let allSkills = [];
+        let isSubmitting = false;
 
         // Check login
         function checkAuth() {
@@ -1014,7 +1089,7 @@
                             <td>${l.link_type}</td>
                             <td style="color: ${statusColor};">${status}</td>
                             <td>
-                                <button class="btn btn-blue" onclick="editListing(${l.id}, ${l.price}, ${l.coin_amount}, '${l.trade_type}', '${l.link_type}', ${l.is_active}, ${l.is_sold})">✏️</button>
+                                <button class="btn btn-blue" onclick='editListing(${JSON.stringify(l)})'>✏️</button>
                                 <button class="btn btn-red" onclick="deleteListing(${l.id})">🗑️</button>
                             </td>
                         </tr>
@@ -1027,19 +1102,78 @@
             }
         }
 
-        function editListing(id, price, coins, tradeType, linkType, isActive, isSold) {
-            document.getElementById('editListingId').value = id;
-            document.getElementById('editPrice').value = price;
-            document.getElementById('editCoins').value = coins;
-            document.getElementById('editTradeType').value = tradeType;
-            document.getElementById('editLinkType').value = linkType;
+        function editListing(listing) {
+            document.getElementById('editListingId').value = listing.id;
+            document.getElementById('editPrice').value = listing.price;
+            document.getElementById('editCoins').value = listing.coin_amount;
+            document.getElementById('editTradeType').value = listing.trade_type;
+            document.getElementById('editLinkType').value = listing.link_type;
             
             let status = 'active';
-            if (isSold) status = 'sold';
-            else if (!isActive) status = 'inactive';
+            if (listing.is_sold) status = 'sold';
+            else if (!listing.is_active) status = 'inactive';
             document.getElementById('editStatus').value = status;
+
+            // Populate featured players
+            const playersContainer = document.getElementById('editPlayersContainer');
+            playersContainer.innerHTML = '';
+            editPlayerCount = 0;
+            
+            if (listing.featured_players && listing.featured_players.length > 0) {
+                listing.featured_players.forEach(player => {
+                    if (player.trim()) {
+                        addEditPlayerRow(player.trim());
+                    }
+                });
+            } else {
+                addEditPlayerRow('');
+            }
+
+            // Populate skills checkboxes
+            const skillsContainer = document.getElementById('editSkillsContainer');
+            const selectedSkills = listing.special_skills || [];
+            
+            let skillsHtml = '<div class="skills-checkbox-grid">';
+            allSkills.forEach(skill => {
+                const isChecked = selectedSkills.includes(skill) ? 'checked' : '';
+                skillsHtml += `
+                    <label class="skill-checkbox">
+                        <input type="checkbox" value="${skill}" ${isChecked}>
+                        <span>✨ ${skill}</span>
+                    </label>
+                `;
+            });
+            skillsHtml += '</div>';
+            skillsContainer.innerHTML = skillsHtml;
             
             document.getElementById('editListingModal').classList.add('show');
+        }
+
+        function addEditPlayerRow(playerName = '') {
+            if (editPlayerCount >= 4) {
+                document.getElementById('editPlayerLimit').style.display = 'block';
+                document.getElementById('addEditPlayerBtn').disabled = true;
+                return;
+            }
+            
+            const container = document.getElementById('editPlayersContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'player-row';
+            newRow.innerHTML = `
+                <input type="text" class="edit-player-input form-control" placeholder="Player name" maxlength="50" value="${playerName}">
+                ${editPlayerCount > 0 ? '<button class="remove-player" onclick="this.parentElement.remove(); editPlayerCount--; document.getElementById(\'editPlayerLimit\').style.display=\'none\'; document.getElementById(\'addEditPlayerBtn\').disabled=false;">✖</button>' : ''}
+            `;
+            container.appendChild(newRow);
+            editPlayerCount++;
+            
+            if (editPlayerCount >= 4) {
+                document.getElementById('editPlayerLimit').style.display = 'block';
+                document.getElementById('addEditPlayerBtn').disabled = true;
+            }
+        }
+
+        function addEditPlayer() {
+            addEditPlayerRow('');
         }
 
         async function saveListingEdit() {
@@ -1049,6 +1183,20 @@
             const tradeType = document.getElementById('editTradeType').value;
             const linkType = document.getElementById('editLinkType').value;
             const status = document.getElementById('editStatus').value;
+
+            // Get featured players
+            const players = [];
+            document.querySelectorAll('.edit-player-input').forEach(input => {
+                if (input.value.trim()) {
+                    players.push(input.value.trim());
+                }
+            });
+
+            // Get selected skills
+            const skills = [];
+            document.querySelectorAll('#editSkillsContainer input:checked').forEach(cb => {
+                skills.push(cb.value);
+            });
 
             const isSold = status === 'sold';
             const isActive = status === 'active';
@@ -1063,6 +1211,8 @@
                         coin_amount: parseInt(coins),
                         trade_type: tradeType,
                         link_type: linkType,
+                        featured_players: players.slice(0, 4),
+                        special_skills: skills,
                         is_active: isActive,
                         is_sold: isSold
                     })
@@ -1109,7 +1259,7 @@
                         <div class="admin-card">
                             ${a.profile_photo ? 
                                 `<img src="${a.profile_photo}" class="admin-photo">` : 
-                                `<div class="admin-photo-placeholder">${a.name.charAt(0)}</div>`
+                                `<div class="admin-photo-placeholder">${a.name.charAt(0).toUpperCase()}</div>`
                             }
                             <div class="admin-info">
                                 <div class="admin-name">${a.name}</div>
@@ -1134,17 +1284,18 @@
         function showAddAdminModal() {
             document.getElementById('adminModalTitle').textContent = '➕ Add Admin';
             document.getElementById('adminId').value = '';
-            document.getElementById('adminName').value = '';
+            document.getElementById('adminNameInput').value = '';
             document.getElementById('adminTelegram').value = '';
             document.getElementById('adminPayment').value = '';
             document.getElementById('adminPhotoPreview').style.display = 'none';
+            document.getElementById('adminPhoto').value = '';
             document.getElementById('adminModal').classList.add('show');
         }
 
         function editAdmin(id, name, telegram, payment) {
             document.getElementById('adminModalTitle').textContent = '✏️ Edit Admin';
             document.getElementById('adminId').value = id;
-            document.getElementById('adminName').value = name;
+            document.getElementById('adminNameInput').value = name;
             document.getElementById('adminTelegram').value = telegram;
             document.getElementById('adminPayment').value = payment;
             document.getElementById('adminModal').classList.add('show');
@@ -1164,13 +1315,14 @@
 
         async function saveAdmin() {
             const id = document.getElementById('adminId').value;
-            const name = document.getElementById('adminName').value.trim();
+            const name = document.getElementById('adminNameInput').value.trim();
             let telegram = document.getElementById('adminTelegram').value.trim();
             const payment = document.getElementById('adminPayment').value.trim();
             const photoFile = document.getElementById('adminPhoto').files[0];
 
+            // Validation - Fix for bug #8
             if (!name || !telegram) {
-                alert('Name and Telegram are required');
+                alert('❌ Name and Telegram are required');
                 return;
             }
 
@@ -1213,10 +1365,10 @@
                     closeAdminModal();
                     loadAdmins();
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('❌ Error: ' + data.message);
                 }
             } catch (e) {
-                alert('Error: ' + e.message);
+                alert('❌ Error: ' + e.message);
             }
         }
 
@@ -1244,6 +1396,7 @@
             try {
                 const res = await fetch('/api/skills');
                 const skills = await res.json();
+                allSkills = skills;
 
                 let html = '';
                 skills.forEach(s => {
@@ -1307,26 +1460,75 @@
             document.getElementById('newSkill').value = '';
         }
 
-        // ==================== MANUAL POST ====================
+        // ==================== MANUAL POST (FULL FEATURES) ====================
         let manualMainBase64 = null;
         let manualOverBase64 = null;
-        let manualSkills = [];
 
         function previewManualImage(input, previewId) {
             if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Check file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size too large. Maximum 5MB.');
+                    input.value = '';
+                    return;
+                }
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById(previewId).src = e.target.result;
                     document.getElementById(previewId).style.display = 'block';
                     
-                    if (previewId === 'mainPreview') {
-                        manualMainBase64 = e.target.result;
+                    // Compress if needed
+                    if (e.target.result.length > 500000) {
+                        compressImage(e.target.result, function(compressed) {
+                            if (previewId === 'mainPreview') {
+                                manualMainBase64 = compressed;
+                            } else {
+                                manualOverBase64 = compressed;
+                            }
+                        });
                     } else {
-                        manualOverBase64 = e.target.result;
+                        if (previewId === 'mainPreview') {
+                            manualMainBase64 = e.target.result;
+                        } else {
+                            manualOverBase64 = e.target.result;
+                        }
                     }
                 };
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             }
+        }
+
+        function compressImage(base64, callback) {
+            const img = new Image();
+            img.src = base64;
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 1200;
+                
+                if (width > maxSize || height > maxSize) {
+                    if (width > height) {
+                        height = (height / width) * maxSize;
+                        width = maxSize;
+                    } else {
+                        width = (width / height) * maxSize;
+                        height = maxSize;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const compressed = canvas.toDataURL('image/jpeg', 0.8);
+                callback(compressed);
+            };
         }
 
         function addManualPlayer() {
@@ -1340,8 +1542,8 @@
             const newRow = document.createElement('div');
             newRow.className = 'player-row';
             newRow.innerHTML = `
-                <input type="text" class="manual-player-input form-control" placeholder="Player name">
-                <button class="remove-player" onclick="this.parentElement.remove(); manualPlayerCount--;">✖</button>
+                <input type="text" class="manual-player-input form-control" placeholder="Player name" maxlength="50">
+                <button class="remove-player" onclick="this.parentElement.remove(); manualPlayerCount--; document.getElementById('manualPlayerLimit').style.display='none'; document.getElementById('addManualPlayerBtn').disabled=false;">✖</button>
             `;
             container.appendChild(newRow);
             manualPlayerCount++;
@@ -1356,7 +1558,6 @@
             try {
                 const res = await fetch('/api/skills');
                 const skills = await res.json();
-                manualSkills = skills;
                 
                 const container = document.getElementById('manualSkillsContainer');
                 
@@ -1385,6 +1586,8 @@
         }
 
         async function manualPost() {
+            if (isSubmitting) return;
+            
             const seller = document.getElementById('manualSeller').value.trim();
             const price = document.getElementById('manualPrice').value;
             const coins = document.getElementById('manualCoins').value;
@@ -1406,13 +1609,23 @@
             });
             
             // Validate
-            if (!seller || !price || !manualMainBase64 || !manualOverBase64) {
-                alert('Please fill all required fields and upload screenshots');
+            if (!seller) {
+                alert('❌ Seller username is required');
+                return;
+            }
+            
+            if (!price || price <= 0) {
+                alert('❌ Please enter a valid price');
+                return;
+            }
+            
+            if (!manualMainBase64 || !manualOverBase64) {
+                alert('❌ Please upload both screenshots');
                 return;
             }
             
             if (players.length === 0) {
-                alert('Please add at least one featured player');
+                alert('❌ Please add at least one featured player');
                 return;
             }
             
@@ -1422,12 +1635,14 @@
                 formattedSeller = '@' + formattedSeller;
             }
             
-            // Disable button and show loading
+            // Disable button and show loading (Fix #2)
+            isSubmitting = true;
             const postBtn = document.getElementById('manualPostBtn');
-            const loading = document.getElementById('manualPostLoading');
+            const loadingOverlay = document.getElementById('manualPostLoading');
             
             postBtn.disabled = true;
-            loading.style.display = 'block';
+            postBtn.textContent = '⏳ POSTING...';
+            loadingOverlay.style.display = 'flex';
             
             try {
                 const res = await fetch('/api/admin/manual_post', {
@@ -1459,14 +1674,18 @@
                     document.getElementById('overPreview').style.display = 'none';
                     document.getElementById('manualMain').value = '';
                     document.getElementById('manualOver').value = '';
+                    manualMainBase64 = null;
+                    manualOverBase64 = null;
                     
                     // Reset players
                     document.getElementById('manualPlayersContainer').innerHTML = `
                         <div class="player-row">
-                            <input type="text" class="manual-player-input form-control" placeholder="Player name">
+                            <input type="text" class="manual-player-input form-control" placeholder="e.g., Messi" maxlength="50">
                         </div>
                     `;
                     manualPlayerCount = 1;
+                    document.getElementById('manualPlayerLimit').style.display = 'none';
+                    document.getElementById('addManualPlayerBtn').disabled = false;
                     
                     // Reset skills
                     document.querySelectorAll('#manualSkillsContainer input:checked').forEach(cb => {
@@ -1475,13 +1694,15 @@
                     
                     loadListings();
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('❌ Error: ' + data.message);
                 }
             } catch (e) {
-                alert('Error: ' + e.message);
+                alert('❌ Error: ' + e.message);
             } finally {
+                isSubmitting = false;
                 postBtn.disabled = false;
-                loading.style.display = 'none';
+                postBtn.textContent = '✅ POST LISTING';
+                loadingOverlay.style.display = 'none';
             }
         }
 
@@ -1493,6 +1714,13 @@
                 reader.readAsDataURL(file);
             });
         }
+
+        // Prevent accidental navigation while submitting
+        window.onbeforeunload = function() {
+            if (isSubmitting) {
+                return 'Your listing is being posted. Are you sure you want to leave?';
+            }
+        };
 
         // Initialize
         checkAuth();
