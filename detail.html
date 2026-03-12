@@ -17,9 +17,10 @@
             background: #0a0c10;
             color: #e5e7eb;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        /* Header - Dark Mode */
         .header {
             background: #1a1e24;
             padding: 12px 20px;
@@ -71,7 +72,7 @@
             width: 100%;
         }
 
-        /* Loading */
+        /* Loading - Dark Mode */
         .loading-container {
             display: flex;
             flex-direction: column;
@@ -95,7 +96,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Screenshots */
+        /* Screenshots - Dark Mode */
         .screenshots-container {
             display: flex;
             flex-direction: column;
@@ -127,7 +128,7 @@
             background: #0a0c10;
         }
 
-        /* Info Card */
+        /* Info Card - Dark Mode */
         .info-card {
             background: #1a1e24;
             border-radius: 16px;
@@ -170,7 +171,7 @@
             color: #e5e7eb;
         }
 
-        /* Featured Players */
+        /* Featured Players - Dark Mode */
         .featured-section {
             margin-bottom: 25px;
         }
@@ -207,7 +208,7 @@
             transform: translateY(-2px);
         }
 
-        /* Special Skills */
+        /* Special Skills - Dark Mode */
         .skills-section {
             margin-bottom: 25px;
         }
@@ -234,7 +235,7 @@
             transform: translateY(-2px);
         }
 
-        /* Contact Seller */
+        /* Contact Seller - Dark Mode */
         .contact-section {
             background: #1a1e24;
             border-radius: 16px;
@@ -286,7 +287,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
-        /* Trusted Admins */
+        /* Trusted Admins - Dark Mode */
         .admins-section {
             background: #1a1e24;
             border-radius: 16px;
@@ -337,6 +338,7 @@
             font-size: 20px;
             font-weight: 700;
             color: white;
+            flex-shrink: 0;
         }
 
         .admin-avatar-img {
@@ -349,17 +351,18 @@
 
         .admin-info {
             flex: 1;
+            min-width: 0;
         }
 
         .admin-name {
             font-weight: 600;
             color: #60a5fa;
+            font-size: 14px;
         }
 
         .admin-telegram {
             font-size: 12px;
             color: #9ca3af;
-            margin-top: 2px;
         }
 
         .admin-payment {
@@ -379,6 +382,7 @@
             text-decoration: none;
             transition: all 0.3s ease;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .admin-contact:hover {
@@ -417,6 +421,14 @@
             .admin-card {
                 flex-wrap: wrap;
             }
+
+            .price-tag {
+                font-size: 24px;
+            }
+
+            .screenshot-card {
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -433,7 +445,7 @@
     <div class="container">
         <div id="loading" class="loading-container">
             <div class="loading-spinner"></div>
-            <div>Loading account details...</div>
+            <div style="color: #9ca3af;">Loading account details...</div>
         </div>
 
         <div id="content" style="display: none;">
@@ -444,7 +456,7 @@
                     <img id="mainSquad" class="squad-image" src="" alt="Main Squad" loading="lazy">
                 </div>
                 <div class="screenshot-card">
-                    <div class="screenshot-title">🔄 OVERBENCH</div>
+                    <div class="screenshot-title">🔄 OVERBENCH SQUAD</div>
                     <img id="overbench" class="squad-image" src="" alt="Overbench Squad" loading="lazy">
                 </div>
             </div>
@@ -530,19 +542,29 @@
                 document.getElementById('content').style.display = 'block';
 
                 // Set screenshots
-                document.getElementById('mainSquad').src = data.main_screenshot;
-                document.getElementById('overbench').src = data.overbench_screenshot;
+                const mainImg = document.getElementById('mainSquad');
+                const overImg = document.getElementById('overbench');
+                
+                mainImg.src = data.main_screenshot;
+                overImg.src = data.overbench_screenshot;
+                
+                // Add error handling for images
+                mainImg.onerror = function() {
+                    this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="%232d3748" width="400" height="300"/><text fill="%239ca3af" x="50%" y="50%" text-anchor="middle">Image not available</text></svg>';
+                };
+                overImg.onerror = mainImg.onerror;
 
                 // Set basic info
                 document.getElementById('price').textContent = `💰 ${data.price} ETB`;
-                document.getElementById('coins').textContent = data.coin_amount > 0 ? `${data.coin_amount} Coins` : 'No Coins';
+                document.getElementById('coins').textContent = data.coin_amount > 0 ? `${data.coin_amount.toLocaleString()} Coins` : 'No Coins';
                 document.getElementById('tradeType').textContent = data.trade_type;
                 document.getElementById('linkType').textContent = data.link_type;
                 document.getElementById('postedDate').textContent = new Date(data.created).toLocaleDateString();
                 document.getElementById('sellerUsername').textContent = data.seller;
 
                 // Set contact seller button
-                document.getElementById('contactSellerBtn').href = `https://t.me/${data.seller.replace('@', '')}`;
+                const telegramUsername = data.seller.replace('@', '');
+                document.getElementById('contactSellerBtn').href = `https://t.me/${telegramUsername}`;
 
                 // Set featured players
                 const featuredDiv = document.getElementById('featuredPlayers');
@@ -551,7 +573,7 @@
                         `<span class="player-tag">⭐ ${p}</span>`
                     ).join('');
                 } else {
-                    featuredDiv.innerHTML = '<span style="color: #9ca3af;">No featured players</span>';
+                    featuredDiv.innerHTML = '<span style="color: #9ca3af;">No featured players listed</span>';
                 }
 
                 // Set special skills
@@ -561,33 +583,35 @@
                         `<span class="skill-tag">✨ ${s}</span>`
                     ).join('');
                 } else {
-                    skillsDiv.innerHTML = '<span style="color: #9ca3af;">No special skills</span>';
+                    skillsDiv.innerHTML = '<span style="color: #9ca3af;">No special skills listed</span>';
                 }
 
                 // Set trusted admins
                 const adminsDiv = document.getElementById('adminsList');
                 if (data.trusted_admins && data.trusted_admins.length > 0) {
-                    adminsDiv.innerHTML = data.trusted_admins.map(a => `
+                    adminsDiv.innerHTML = data.trusted_admins.map(a => {
+                        const adminTelegram = a.telegram.replace('@', '');
+                        return `
                         <div class="admin-card">
                             ${a.profile_photo ? 
-                                `<img src="${a.profile_photo}" class="admin-avatar-img">` : 
-                                `<div class="admin-avatar">${a.name.charAt(0)}</div>`
+                                `<img src="${a.profile_photo}" class="admin-avatar-img" alt="${a.name}" loading="lazy">` : 
+                                `<div class="admin-avatar">${a.name.charAt(0).toUpperCase()}</div>`
                             }
                             <div class="admin-info">
                                 <div class="admin-name">${a.name}</div>
                                 <div class="admin-telegram">${a.telegram}</div>
                                 <div class="admin-payment">${a.payment || 'Bank Transfer / TeleBirr'}</div>
                             </div>
-                            <a href="https://t.me/${a.telegram.replace('@', '')}" target="_blank" class="admin-contact">CONTACT</a>
+                            <a href="https://t.me/${adminTelegram}" target="_blank" class="admin-contact">CONTACT</a>
                         </div>
-                    `).join('');
+                    `}).join('');
                 } else {
-                    adminsDiv.innerHTML = '<div class="no-admins">No trusted admins available</div>';
+                    adminsDiv.innerHTML = '<div class="no-admins">Trusted admin list will be available as soon as the admin adds them.</div>';
                 }
 
             } catch (e) {
                 console.error('Error:', e);
-                alert('Error loading listing');
+                alert('Error loading listing details');
                 goBack();
             }
         }
