@@ -18,9 +18,10 @@
             background: #0a0c10;
             color: #e5e7eb;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Dark Mode Header */
+        /* Dark Mode Header - Fixed Layout */
         .header {
             background: #1a1e24;
             padding: 12px 16px;
@@ -29,33 +30,58 @@
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             display: flex;
-            align-items: center;
-            justify-content: space-between;
             flex-wrap: wrap;
+            align-items: center;
             gap: 10px;
             width: 100%;
+            max-width: 100vw;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 10px;
         }
 
         .logo {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: #60a5fa;
             display: flex;
             align-items: center;
             gap: 6px;
             white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            order: 3;
         }
 
         .search-box {
             flex: 1;
-            min-width: 200px;
-            max-width: 300px;
+            min-width: 0;
             position: relative;
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px 16px 10px 36px;
+            padding: 10px 12px 10px 36px;
             border: 1px solid #2d3748;
             border-radius: 25px;
             font-size: 13px;
@@ -75,7 +101,7 @@
             font-size: 12px;
         }
 
-        .search-box i {
+        .search-icon {
             position: absolute;
             left: 12px;
             top: 50%;
@@ -88,13 +114,14 @@
             background: #2563eb;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 16px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .search-btn:hover {
@@ -103,20 +130,24 @@
 
         .nav-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             flex-wrap: wrap;
+            width: 100%;
+            order: 2;
+            justify-content: center;
         }
 
         .nav-btn {
-            padding: 8px 14px;
+            padding: 8px 12px;
             border: none;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .sell-btn {
@@ -149,7 +180,6 @@
         .logout-btn {
             background: #ef4444;
             color: white;
-            padding: 8px 14px;
         }
 
         .logout-btn:hover {
@@ -162,11 +192,11 @@
             padding: 6px 12px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             white-space: nowrap;
         }
 
-        /* Login Section */
+        /* Login Section - Dark Mode */
         .login-section {
             background: #1a1e24;
             border-radius: 16px;
@@ -180,7 +210,7 @@
         .login-section h2 {
             color: #60a5fa;
             margin-bottom: 20px;
-            font-size: 24px;
+            font-size: 22px;
             text-align: center;
         }
 
@@ -283,7 +313,7 @@
             margin-top: 20px;
         }
 
-        /* Listing Card */
+        /* Listing Card - Tags Below Screenshot */
         .listing-card {
             background: #1a1e24;
             border-radius: 12px;
@@ -315,7 +345,6 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
-            loading: lazy;
         }
 
         .listing-card:hover .listing-image {
@@ -324,25 +353,20 @@
 
         /* Tags - Now below image */
         .tags-container {
-            padding: 16px;
+            padding: 12px;
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             background: #1a1e24;
+            border-bottom: 1px solid #2d3748;
         }
 
         .tag {
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 15px;
             font-size: 11px;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .tag:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         .tag-price {
@@ -376,8 +400,7 @@
         }
 
         .card-content {
-            padding: 16px;
-            border-top: 1px solid #2d3748;
+            padding: 12px;
         }
 
         .seller-info {
@@ -402,20 +425,21 @@
         .seller-name {
             font-weight: 600;
             color: #60a5fa;
+            font-size: 13px;
         }
 
         .listing-stats {
             color: #9ca3af;
-            font-size: 12px;
-            margin-top: 8px;
+            font-size: 11px;
+            margin-top: 6px;
         }
 
         /* Action Buttons for My Listings */
         .listing-actions {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
-            padding-top: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px solid #2d3748;
         }
 
@@ -448,7 +472,7 @@
             background: #dc2626;
         }
 
-        /* Trusted Admins Section */
+        /* Trusted Admins Section - Dark Mode */
         .trusted-section {
             background: #1a1e24;
             border-radius: 12px;
@@ -499,15 +523,26 @@
             font-size: 20px;
             font-weight: 700;
             color: white;
+            flex-shrink: 0;
+        }
+
+        .admin-avatar-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #60a5fa;
         }
 
         .admin-info {
             flex: 1;
+            min-width: 0;
         }
 
         .admin-name {
             font-weight: 600;
             color: #60a5fa;
+            font-size: 14px;
         }
 
         .admin-telegram {
@@ -530,6 +565,12 @@
             font-size: 11px;
             cursor: pointer;
             text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .contact-admin:hover {
+            background: #1d4ed8;
         }
 
         .no-admins {
@@ -538,6 +579,7 @@
             padding: 30px;
             background: #2d3748;
             border-radius: 10px;
+            grid-column: 1 / -1;
         }
 
         /* Empty States */
@@ -548,62 +590,85 @@
             border-radius: 12px;
             color: #9ca3af;
             border: 1px solid #2d3748;
+            grid-column: 1 / -1;
         }
 
-        /* Responsive Design */
+        /* Responsive Design - Mobile Optimized */
         @media (max-width: 768px) {
             .header {
-                flex-direction: column;
-                align-items: stretch;
+                padding: 10px 12px;
             }
 
             .logo {
-                text-align: center;
-                justify-content: center;
-            }
-
-            .search-box {
-                max-width: 100%;
+                font-size: 14px;
             }
 
             .nav-buttons {
-                justify-content: center;
+                gap: 5px;
+            }
+
+            .nav-btn {
+                padding: 6px 10px;
+                font-size: 11px;
             }
 
             .username-badge {
-                width: 100%;
-                text-align: center;
+                font-size: 11px;
+                padding: 5px 10px;
             }
 
             .feed-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .admins-grid {
                 grid-template-columns: 1fr;
             }
+
+            .container {
+                padding: 0 12px;
+            }
         }
 
         @media (max-width: 480px) {
+            .header-controls {
+                width: 100%;
+            }
+
             .nav-buttons {
-                flex-wrap: wrap;
+                justify-content: flex-start;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 5px;
             }
 
             .nav-btn {
-                flex: 1;
-                text-align: center;
-                padding: 8px 10px;
-                font-size: 12px;
+                flex: 0 0 auto;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
             }
 
             .tags-container {
-                padding: 12px;
+                padding: 10px;
             }
 
             .tag {
                 font-size: 10px;
-                padding: 4px 8px;
+                padding: 3px 8px;
             }
+        }
+
+        /* Hide scrollbar for mobile nav */
+        .nav-buttons::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
@@ -627,19 +692,24 @@
     <!-- Main App -->
     <div id="mainApp" style="display: none;">
         <header class="header">
-            <div class="logo">
-                ⚽ eFootball Marketplace
+            <div class="header-top">
+                <div class="logo">
+                    ⚽ eFootball Marketplace
+                </div>
+                <div class="header-controls">
+                    <span class="username-badge" id="displayUsername"></span>
+                </div>
             </div>
-
-            <div class="search-box">
-                <i>🔍</i>
-                <input type="text" id="searchInput" placeholder="Search using price, skill, or player name">
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search using price, skill, or player name">
+                </div>
+                <button class="search-btn" onclick="searchListings()">SEARCH</button>
             </div>
-
-            <button class="search-btn" onclick="searchListings()">SEARCH</button>
 
             <div class="nav-buttons">
-                <span class="username-badge" id="displayUsername"></span>
                 <button class="nav-btn sell-btn" onclick="goToSell()">➕ SELL</button>
                 <button class="nav-btn listings-btn" onclick="showMyListings()">📋 MY LISTINGS</button>
                 <button class="nav-btn trusted-btn" onclick="showTrustedAdmins()">🛡️ TRUSTED ADMINS</button>
@@ -682,10 +752,13 @@
         let userId = null;
         let username = null;
         let allListings = [];
+        let isLoading = false;
 
         // Initialize Telegram
         if (tg) {
             tg.ready();
+            tg.setBackgroundColor('#0a0c10');
+            tg.setHeaderColor('#1a1e24');
             const user = tg.initDataUnsafe?.user;
             if (user && user.username) {
                 document.getElementById('telegramUsername').value = '@' + user.username;
@@ -706,7 +779,6 @@
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             document.getElementById('displayUsername').textContent = username;
-            showLoading(true);
         }
 
         function showLoading(show) {
@@ -716,6 +788,7 @@
 
         function showMessage(msg, isError = true) {
             document.getElementById('loginMessage').textContent = msg;
+            document.getElementById('loginMessage').style.color = isError ? '#ef4444' : '#10b981';
         }
 
         async function handleRegister() {
@@ -841,6 +914,7 @@
             document.getElementById('feedSection').style.display = 'block';
             document.getElementById('myListingsSection').style.display = 'none';
             document.getElementById('trustedSection').style.display = 'none';
+            loadListings();
         }
 
         function showMyListings() {
@@ -857,28 +931,11 @@
             loadTrustedAdmins();
         }
 
-        async function searchListings() {
-            const query = document.getElementById('searchInput').value.trim();
-            if (!query) {
-                loadListings();
-                return;
-            }
-
-            showLoading(true);
-            try {
-                const res = await fetch(`/api/listings?search=${encodeURIComponent(query)}`);
-                const listings = await res.json();
-                displayListings(listings);
-            } catch (e) {
-                console.error(e);
-                document.getElementById('listingsGrid').innerHTML = '<div class="no-listings">Error searching listings</div>';
-            } finally {
-                showLoading(false);
-            }
-        }
-
         async function loadListings() {
+            if (isLoading) return;
+            isLoading = true;
             showLoading(true);
+            
             try {
                 const res = await fetch('/api/listings');
                 const listings = await res.json();
@@ -889,6 +946,7 @@
                 document.getElementById('listingsGrid').innerHTML = '<div class="no-listings">Error loading listings</div>';
             } finally {
                 showLoading(false);
+                isLoading = false;
             }
         }
 
@@ -939,6 +997,31 @@
             grid.innerHTML = html;
         }
 
+        async function searchListings() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                loadListings();
+                return;
+            }
+
+            if (isLoading) return;
+            isLoading = true;
+            showLoading(true);
+            
+            try {
+                const res = await fetch(`/api/listings?search=${encodeURIComponent(query)}`);
+                const listings = await res.json();
+                allListings = listings;
+                displayListings(listings);
+            } catch (e) {
+                console.error(e);
+                document.getElementById('listingsGrid').innerHTML = '<div class="no-listings">Error searching listings</div>';
+            } finally {
+                showLoading(false);
+                isLoading = false;
+            }
+        }
+
         async function loadMyListings() {
             try {
                 const res = await fetch(`/api/listings?user=${username}`);
@@ -979,8 +1062,8 @@
                                     <span class="seller-name">${l.seller}</span>
                                 </div>
                                 <div class="listing-actions">
-                                    <button class="action-btn edit-btn" onclick="editListing(${l.id})">✏️ Edit</button>
-                                    <button class="action-btn delete-btn" onclick="deleteListing(${l.id})">🗑️ Delete</button>
+                                    <button class="action-btn edit-btn" onclick="event.stopPropagation(); editListing(${l.id})">✏️ Edit</button>
+                                    <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteListing(${l.id})">🗑️ Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -1012,7 +1095,7 @@
                     html += `
                         <div class="admin-card">
                             ${a.profile_photo ? 
-                                `<img src="${a.profile_photo}" class="admin-avatar" style="object-fit: cover;">` : 
+                                `<img src="${a.profile_photo}" class="admin-avatar-img" alt="${a.name}">` : 
                                 `<div class="admin-avatar">${a.name.charAt(0)}</div>`
                             }
                             <div class="admin-info">
@@ -1031,22 +1114,6 @@
                 console.error(e);
                 document.getElementById('trustedAdminsGrid').innerHTML = '<div class="no-admins">Error loading admins</div>';
             }
-        }
-
-        function searchListings() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            if (!query) {
-                loadListings();
-                return;
-            }
-
-            const filtered = allListings.filter(l => {
-                return l.price.toString().includes(query) ||
-                       l.featured_players.some(p => p.toLowerCase().includes(query)) ||
-                       l.special_skills.some(s => s.toLowerCase().includes(query));
-            });
-
-            displayListings(filtered);
         }
 
         function viewListing(id) {
@@ -1074,6 +1141,13 @@
                 alert('Error deleting listing');
             }
         }
+
+        // Search on Enter key
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchListings();
+            }
+        });
     </script>
 </body>
 </html>
