@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin Login - eFootball Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0a0c10;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,13 +22,15 @@
             padding: 20px;
         }
 
+        /* Dark Mode Login Container */
         .login-container {
-            background: white;
+            background: #1a1e24;
             border-radius: 20px;
             padding: 40px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid #2d3748;
             animation: slideIn 0.5s ease;
         }
 
@@ -49,13 +51,13 @@
         }
 
         .logo h1 {
-            color: #2563eb;
-            font-size: 28px;
+            color: #60a5fa;
+            font-size: 26px;
             font-weight: 700;
         }
 
         .logo p {
-            color: #64748b;
+            color: #9ca3af;
             font-size: 14px;
             margin-top: 5px;
         }
@@ -66,7 +68,7 @@
 
         .form-group label {
             display: block;
-            color: #1e293b;
+            color: #9ca3af;
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 8px;
@@ -75,17 +77,23 @@
         .form-control {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #4b5563;
             border-radius: 10px;
             font-family: 'Inter', sans-serif;
             font-size: 15px;
             transition: all 0.3s ease;
+            background: #2d3748;
+            color: #e5e7eb;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #6b7280;
         }
 
         .login-btn {
@@ -102,10 +110,15 @@
             margin-top: 10px;
         }
 
-        .login-btn:hover {
+        .login-btn:hover:not(:disabled) {
             background: #1d4ed8;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+        }
+
+        .login-btn:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
         }
 
         .error-message {
@@ -122,21 +135,32 @@
         }
 
         .back-link a {
-            color: #64748b;
+            color: #9ca3af;
             text-decoration: none;
             font-size: 14px;
             transition: color 0.3s ease;
         }
 
         .back-link a:hover {
-            color: #2563eb;
+            color: #60a5fa;
         }
 
         .loading {
             display: none;
             text-align: center;
             margin-top: 15px;
-            color: #2563eb;
+            color: #60a5fa;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
@@ -167,7 +191,7 @@
     </div>
 
     <script>
-        function handleLogin() {
+        async function handleLogin() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorDiv = document.getElementById('errorMsg');
@@ -184,24 +208,32 @@
             loginBtn.disabled = true;
             loading.style.display = 'block';
             
-            // Hardcoded credentials as requested
-            setTimeout(() => {
-                if (username === 'awnowner' && password === '12604') {
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password})
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
                     localStorage.setItem('adminUser', username);
-                    localStorage.setItem('adminRole', 'owner');
-                    window.location.href = '/admin';
-                } else if (username === 'awnadmin' && password === '11512') {
-                    localStorage.setItem('adminUser', username);
-                    localStorage.setItem('adminRole', 'admin');
+                    localStorage.setItem('adminRole', data.role);
                     window.location.href = '/admin';
                 } else {
-                    errorDiv.textContent = 'Invalid username or password';
+                    errorDiv.textContent = data.message || 'Invalid credentials';
                     loginBtn.disabled = false;
                     loading.style.display = 'none';
                 }
-            }, 800);
+            } catch (e) {
+                errorDiv.textContent = 'Error: ' + e.message;
+                loginBtn.disabled = false;
+                loading.style.display = 'none';
+            }
         }
         
+        // Check if already logged in
         function checkLogin() {
             const adminUser = localStorage.getItem('adminUser');
             const adminRole = localStorage.getItem('adminRole');
@@ -212,6 +244,13 @@
         }
         
         checkLogin();
+
+        // Allow Enter key to submit
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
     </script>
 </body>
 </html>
